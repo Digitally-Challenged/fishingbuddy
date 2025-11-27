@@ -1,38 +1,62 @@
-import { FormData } from '../types';
+import { JournalEntry } from '../types';
+import { migrateEntries, needsMigration } from './migration';
 
 const STORAGE_KEY = 'fishingJournalEntries';
+const SCHEMA_VERSION_KEY = 'fishingJournalSchemaVersion';
+const CURRENT_SCHEMA_VERSION = 2;
 
 export const storageUtils = {
-  // Save entries to localStorage
-  saveEntries: (entries: FormData[]): void => {
+  saveEntries: (entries: JournalEntry[]): void => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+      localStorage.setItem(SCHEMA_VERSION_KEY, String(CURRENT_SCHEMA_VERSION));
     } catch (error) {
       console.error('Error saving entries to localStorage:', error);
       throw new Error('Failed to save entries');
     }
   },
 
-  // Load entries from localStorage
-  loadEntries: (): FormData[] => {
+  loadEntries: (): JournalEntry[] => {
     try {
       const entries = localStorage.getItem(STORAGE_KEY);
-      return entries ? JSON.parse(entries) : [];
+      if (!entries) return [];
+
+      const parsed = JSON.parse(entries);
+
+      // Check if migration needed
+      if (needsMigration(parsed)) {
+        console.log('Migrating legacy entries to new schema...');
+        const migrated = migrateEntries(parsed);
+        storageUtils.saveEntries(migrated);
+        return migrated;
+      }
+
+      return parsed;
     } catch (error) {
       console.error('Error loading entries from localStorage:', error);
       return [];
     }
   },
 
-  // Export entries as JSON file
   exportEntries: (): void => {
     try {
       const entries = storageUtils.loadEntries();
-      const dataStr = JSON.stringify(entries, null, 2);
+      const exportData = {
+        exportedAt: new Date().toISOString(),
+        version: '2.0',
+        schemaVersion: CURRENT_SCHEMA_VERSION,
+        totalEntries: entries.length,
+        dateRange: entries.length > 0 ? {
+          earliest: entries.reduce((min, e) => e.date < min ? e.date : min, entries[0].date),
+          latest: entries.reduce((max, e) => e.date > max ? e.date : max, entries[0].date),
+        } : null,
+        entries,
+      };
+
+      const dataStr = JSON.stringify(exportData, null, 2);
       const dataUri = `data:application/json;charset=utf-8,${encodeURIComponent(dataStr)}`;
-      
       const exportFileDefaultName = `fishing-journal-export-${new Date().toISOString().split('T')[0]}.json`;
-      
+
       const linkElement = document.createElement('a');
       linkElement.setAttribute('href', dataUri);
       linkElement.setAttribute('download', exportFileDefaultName);
@@ -43,24 +67,30 @@ export const storageUtils = {
     }
   },
 
-  // Import entries from JSON file
-  importEntries: async (file: File): Promise<FormData[]> => {
+  importEntries: async (file: File): Promise<JournalEntry[]> => {
     try {
       const text = await file.text();
-      const entries = JSON.parse(text);
-      
-      // Validate imported data
+      const data = JSON.parse(text);
+
+      // Handle both old format (array) and new format (object with entries)
+      const entries = Array.isArray(data) ? data : data.entries;
+
       if (!Array.isArray(entries)) {
         throw new Error('Invalid import format');
       }
-      
-      // Basic validation of each entry
+
+      // Validate and migrate if needed
       entries.forEach(entry => {
         if (!entry.date || !entry.streamName) {
-          throw new Error('Invalid entry format');
+          throw new Error('Invalid entry format: missing required fields');
         }
       });
-      
+
+      // Migrate legacy entries if needed
+      if (needsMigration(entries)) {
+        return migrateEntries(entries);
+      }
+
       return entries;
     } catch (error) {
       console.error('Error importing entries:', error);
@@ -68,7 +98,6 @@ export const storageUtils = {
     }
   },
 
-  // Clear all entries
   clearEntries: (): void => {
     try {
       localStorage.removeItem(STORAGE_KEY);
@@ -78,10 +107,9 @@ export const storageUtils = {
     }
   },
 
-  // Get storage usage information
   getStorageInfo: (): { used: number; total: number; percentage: number } => {
     const used = new Blob([JSON.stringify(localStorage)]).size;
-    const total = 5 * 1024 * 1024; // 5MB typical localStorage limit
+    const total = 5 * 1024 * 1024;
     return {
       used,
       total,
@@ -104,5 +132,5 @@ export const storageUtils = {
     } catch (error) {
       console.error('Failed to save dark mode preference:', error);
     }
-  }
+  },
 };
