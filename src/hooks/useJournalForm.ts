@@ -1,30 +1,11 @@
 import { useState } from 'react';
-import { FormData, FormErrors, Picture, FormChangeHandler } from '../types';
+import { JournalEntry, FormErrors, Picture, FormChangeHandler, createEmptyEntry } from '../types';
 import { useJournal } from '../context/JournalContext';
 
-const initialFormData: FormData = {
-  date: '',
-  streamName: '',
-  windVelocity: '',
-  windDirection: '',
-  weatherConditions: '',
-  waterClarity: '',
-  usgsGauge: '',
-  flowRate: '',
-  riverDepth: '',
-  waterTemperature: '',
-  fishSpecies: '',
-  numberCaught: '',
-  baitUsed: '',
-  notes: '',
-  pictures: [],
-  wifesMood: '',
-};
-
-export function useJournalForm() {
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+export function useJournalForm(mode: 'quick' | 'full' = 'full') {
+  const [formData, setFormData] = useState<JournalEntry>(createEmptyEntry(mode));
   const [errors, setErrors] = useState<FormErrors>({});
-  const { dispatch } = useJournal();
+  const { addEntry } = useJournal();
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -45,8 +26,9 @@ export function useJournalForm() {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+      updatedAt: new Date().toISOString(),
     }));
-    
+
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({
         ...prev,
@@ -55,27 +37,49 @@ export function useJournalForm() {
     }
   };
 
+  const handleNumberChange = (name: string, value: string) => {
+    const numValue = value === '' ? null : parseFloat(value);
+    setFormData((prev) => ({
+      ...prev,
+      [name]: isNaN(numValue as number) ? null : numValue,
+      updatedAt: new Date().toISOString(),
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      dispatch({ type: 'ADD_ENTRY', payload: formData });
-      setFormData(initialFormData);
+      addEntry({
+        ...formData,
+        updatedAt: new Date().toISOString(),
+      });
+      setFormData(createEmptyEntry(mode));
+      // TODO: Replace with toast notification
       alert('Journal entry saved successfully!');
     }
   };
 
   const handlePictureChange = (pictures: Picture[]) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      pictures
+      pictures,
+      updatedAt: new Date().toISOString(),
     }));
+  };
+
+  const resetForm = () => {
+    setFormData(createEmptyEntry(mode));
+    setErrors({});
   };
 
   return {
     formData,
     errors,
     handleChange,
+    handleNumberChange,
     handleSubmit,
     handlePictureChange,
+    resetForm,
+    setFormData,
   };
 }
