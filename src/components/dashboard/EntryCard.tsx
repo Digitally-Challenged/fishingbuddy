@@ -31,67 +31,82 @@ export default function EntryCard({ entry, onEdit, onDelete }: EntryCardProps) {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        gap: 2,
-        py: 1.5,
-        px: 2,
-        borderBottom: 1,
+        gap: { xs: 1, md: 3 },
+        py: 2,
+        px: { xs: 2, md: 3 },
+        borderRadius: 1,
+        mb: 1,
+        bgcolor: 'background.paper',
+        border: 1,
         borderColor: 'divider',
+        transition: 'all 0.15s ease',
         '&:hover': {
-          bgcolor: 'action.hover',
-        },
-        '&:last-child': {
-          borderBottom: 0,
+          borderColor: 'primary.main',
+          boxShadow: 1,
         },
       }}
     >
       {/* Date */}
-      <Box sx={{ minWidth: 90, textAlign: 'center' }}>
-        <Typography variant="body2" fontWeight="bold">
-          {dayjs(entry.date).format('MMM D')}
+      <Box
+        sx={{
+          minWidth: 70,
+          textAlign: 'center',
+          py: 1,
+          px: 1.5,
+          borderRadius: 1,
+          bgcolor: 'action.hover',
+        }}
+      >
+        <Typography variant="h6" fontWeight="bold" lineHeight={1}>
+          {dayjs(entry.date).format('D')}
         </Typography>
-        <Typography variant="caption" color="text.secondary">
-          {dayjs(entry.date).format('YYYY')}
-        </Typography>
-      </Box>
-
-      {/* Location */}
-      <Box sx={{ minWidth: 140, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-        <MapPin size={14} />
-        <Typography variant="body2" fontWeight="medium" noWrap>
-          {entry.streamName}
-        </Typography>
-      </Box>
-
-      {/* Catch */}
-      <Box sx={{ minWidth: 140, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-        <Fish size={14} />
-        <Typography variant="body2" noWrap>
-          {entry.fishSpecies || '—'} {entry.numberCaught !== null && `× ${entry.numberCaught}`}
+        <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase' }}>
+          {dayjs(entry.date).format('MMM')}
         </Typography>
       </Box>
 
-      {/* Bait */}
-      <Box sx={{ flex: 1, display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.5 }}>
-        {entry.baitUsed && (
-          <>
-            <Anchor size={14} />
-            <Typography variant="body2" color="text.secondary" noWrap>
-              {entry.baitUsed}
-            </Typography>
-          </>
-        )}
+      {/* Main content */}
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        {/* Location */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+          <MapPin size={14} color="#1976d2" />
+          <Typography variant="body1" fontWeight="medium" noWrap>
+            {entry.streamName}
+          </Typography>
+        </Box>
+
+        {/* Catch details */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+          {(entry.fishSpecies || entry.numberCaught !== null) && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Fish size={14} />
+              <Typography variant="body2" color="text.secondary">
+                {entry.fishSpecies || 'Fish'}{entry.numberCaught !== null && ` × ${entry.numberCaught}`}
+              </Typography>
+            </Box>
+          )}
+          {entry.baitUsed && (
+            <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 0.5 }}>
+              <Anchor size={14} />
+              <Typography variant="body2" color="text.secondary">
+                {entry.baitUsed}
+              </Typography>
+            </Box>
+          )}
+        </Box>
       </Box>
 
-      {/* Entry type chip */}
+      {/* Entry type */}
       <Chip
         label={entry.entryMode === 'quick' ? 'Quick' : 'Full'}
         size="small"
-        variant="outlined"
-        sx={{ display: { xs: 'none', sm: 'flex' } }}
+        color={entry.entryMode === 'full' ? 'primary' : 'default'}
+        variant={entry.entryMode === 'full' ? 'filled' : 'outlined'}
+        sx={{ display: { xs: 'none', md: 'flex' } }}
       />
 
       {/* Actions */}
-      <Box sx={{ display: 'flex', gap: 0.5 }}>
+      <Box sx={{ display: 'flex', gap: 0.5, ml: 'auto' }}>
         <Tooltip title="Edit">
           <IconButton size="small" onClick={() => onEdit(entry)}>
             <Edit2 size={16} />

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Typography, Paper } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import EntryCardList from './dashboard/EntryCardList';
 import JournalStats from './dashboard/JournalStats';
 import EditEntryModal from './EditEntryModal';
@@ -18,19 +18,17 @@ export default function Dashboard() {
 
   return (
     <Box>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Fishing Journal Dashboard
+      <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
+        Dashboard
       </Typography>
 
-      {/* Compact stats bar */}
-      <Box sx={{ mb: 3 }}>
-        <JournalStats />
-      </Box>
+      {/* Stats */}
+      <JournalStats />
 
-      {/* Entry List - full width */}
-      <Paper sx={{ p: { xs: 2, md: 3 } }}>
+      {/* Entry List */}
+      <Box sx={{ mt: 4 }}>
         <EntryCardList onEdit={handleEdit} />
-      </Paper>
+      </Box>
 
       {/* Edit Modal */}
       <EditEntryModal

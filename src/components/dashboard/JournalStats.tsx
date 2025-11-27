@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Paper, Typography, Box, Chip } from '@mui/material';
+import { Typography, Box, Chip } from '@mui/material';
 import { Fish, MapPin, Droplets, Calendar, TrendingUp, Award } from 'lucide-react';
 import { useJournal } from '../../context/JournalContext';
 
@@ -51,60 +51,57 @@ export default function JournalStats() {
     };
   }, [state.entries]);
 
-  return (
-    <Paper sx={{ p: 2 }}>
-      {/* Horizontal stats row */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
-        <StatBox icon={<Fish size={18} />} label="Catches" value={stats.totalCatches} />
-        <StatBox icon={<MapPin size={18} />} label="Locations" value={stats.uniqueLocations} />
-        <StatBox icon={<Droplets size={18} />} label="Species" value={stats.uniqueSpecies} />
-        <StatBox icon={<Calendar size={18} />} label="Trips" value={stats.totalTrips} />
-        {stats.totalTrips > 0 && (
-          <StatBox icon={<Award size={18} />} label="Avg/Trip" value={stats.avgCatchPerTrip} />
-        )}
-      </Box>
+  if (stats.totalTrips === 0) {
+    return null;
+  }
 
-      {/* Compact insights row */}
-      {stats.totalTrips > 0 && (stats.topLocation || stats.topBait || stats.topSpecies.length > 0) && (
-        <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider', display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary' }}>
-            <TrendingUp size={14} />
-            <Typography variant="caption">Insights:</Typography>
-          </Box>
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        gap: { xs: 2, md: 4 },
+        flexWrap: 'wrap',
+        p: 3,
+        borderRadius: 2,
+        bgcolor: 'background.paper',
+        border: 1,
+        borderColor: 'divider',
+      }}
+    >
+      <StatBox icon={<Fish size={20} />} label="Catches" value={stats.totalCatches} color="#2196f3" />
+      <StatBox icon={<MapPin size={20} />} label="Locations" value={stats.uniqueLocations} color="#4caf50" />
+      <StatBox icon={<Droplets size={20} />} label="Species" value={stats.uniqueSpecies} color="#9c27b0" />
+      <StatBox icon={<Calendar size={20} />} label="Trips" value={stats.totalTrips} color="#ff9800" />
+      <StatBox icon={<Award size={20} />} label="Avg/Trip" value={stats.avgCatchPerTrip} color="#f44336" />
+
+      {/* Top performers */}
+      {(stats.topLocation || stats.topBait) && (
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', ml: 'auto' }}>
+          <TrendingUp size={16} color="#666" />
           {stats.topLocation && (
-            <Chip
-              icon={<MapPin size={12} />}
-              label={`${stats.topLocation[0]} (${stats.topLocation[1]} trips)`}
-              size="small"
-              variant="outlined"
-            />
+            <Chip label={`Best: ${stats.topLocation[0]}`} size="small" color="primary" variant="outlined" />
           )}
           {stats.topBait && (
-            <Chip
-              label={`Top bait: ${stats.topBait[0]}`}
-              size="small"
-              variant="outlined"
-            />
+            <Chip label={stats.topBait[0]} size="small" variant="outlined" />
           )}
-          {stats.topSpecies.slice(0, 2).map(([species, count]) => (
-            <Chip key={species} label={`${species} (${count})`} size="small" variant="outlined" />
-          ))}
         </Box>
       )}
-    </Paper>
+    </Box>
   );
 }
 
-function StatBox({ icon, label, value }: { icon: React.ReactNode; label: string; value: number | string }) {
+function StatBox({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: number | string; color?: string }) {
   return (
-    <Box sx={{ textAlign: 'center' }}>
-      <Box sx={{ color: 'primary.main', mb: 0.5 }}>{icon}</Box>
-      <Typography variant="h5" component="div">
-        {value}
-      </Typography>
-      <Typography variant="caption" color="text.secondary">
-        {label}
-      </Typography>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      <Box sx={{ color: color || 'primary.main' }}>{icon}</Box>
+      <Box>
+        <Typography variant="h6" component="div" fontWeight="bold" lineHeight={1}>
+          {value}
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          {label}
+        </Typography>
+      </Box>
     </Box>
   );
 }
