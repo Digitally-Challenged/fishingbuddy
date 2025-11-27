@@ -2,13 +2,13 @@ import React from 'react';
 import { Grid, TextField, MenuItem } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
-import { FormData, FormErrors } from '../../types';
+import { FormData, FormErrors, FormChangeHandler, CustomChangeEvent } from '../../types';
 import { getSortedStreams } from '../../data/arkansasStreams';
 
 interface RequiredInfoSectionProps {
   formData: FormData;
   errors: FormErrors;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleChange: FormChangeHandler;
 }
 
 export default function RequiredInfoSection({ formData, errors, handleChange }: RequiredInfoSectionProps) {
@@ -21,12 +21,13 @@ export default function RequiredInfoSection({ formData, errors, handleChange }: 
           label="Date *"
           value={formData.date ? dayjs(formData.date) : null}
           onChange={(newValue) => {
-            handleChange({
+            const event: CustomChangeEvent = {
               target: {
                 name: 'date',
                 value: newValue ? newValue.format('YYYY-MM-DD') : '',
               },
-            } as any);
+            };
+            handleChange(event);
           }}
           slotProps={{
             textField: {
