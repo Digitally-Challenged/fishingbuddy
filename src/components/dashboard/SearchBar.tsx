@@ -8,6 +8,7 @@ import {
   MenuItem,
   IconButton,
   Typography,
+  Collapse,
 } from '@mui/material';
 import { Search, Filter, X } from 'lucide-react';
 import { useJournal } from '../../context/JournalContext';
@@ -28,6 +29,7 @@ export default function SearchBar({ filters, onFiltersChange }: SearchBarProps) 
   const { state } = useJournal();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [filterType, setFilterType] = useState<'location' | 'species' | 'mode' | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
 
   // Get unique values for filters
   const locations = [...new Set(state.entries.map((e) => e.streamName))].filter(Boolean).sort();
@@ -70,6 +72,8 @@ export default function SearchBar({ filters, onFiltersChange }: SearchBarProps) 
     filters.entryMode !== 'all' && { type: 'mode' as const, label: filters.entryMode },
   ].filter(Boolean);
 
+  const hasActiveFilters = activeFilters.length > 0;
+
   return (
     <Box sx={{ mb: 2 }}>
       {/* Search input */}
@@ -90,52 +94,20 @@ export default function SearchBar({ filters, onFiltersChange }: SearchBarProps) 
             <InputAdornment position="end">
               <IconButton
                 size="small"
-                onClick={(e) => handleFilterClick(e, 'location')}
-                color={filters.location ? 'primary' : 'default'}
-                aria-label="Filter by location"
+                onClick={() => setShowFilters(!showFilters)}
+                color={hasActiveFilters || showFilters ? 'primary' : 'default'}
+                aria-label="Toggle filters"
               >
                 <Filter size={18} />
               </IconButton>
             </InputAdornment>
           ),
         }}
-        sx={{ mb: 1 }}
       />
 
-      {/* Filter chips */}
-      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-        <Chip
-          label="Location"
-          size="small"
-          variant={filters.location ? 'filled' : 'outlined'}
-          onClick={(e) => handleFilterClick(e, 'location')}
-          onDelete={filters.location ? () => clearFilter('location') : undefined}
-          deleteIcon={<X size={14} />}
-        />
-        <Chip
-          label="Species"
-          size="small"
-          variant={filters.species ? 'filled' : 'outlined'}
-          onClick={(e) => handleFilterClick(e, 'species')}
-          onDelete={filters.species ? () => clearFilter('species') : undefined}
-          deleteIcon={<X size={14} />}
-        />
-        <Chip
-          label="Entry Type"
-          size="small"
-          variant={filters.entryMode !== 'all' ? 'filled' : 'outlined'}
-          onClick={(e) => handleFilterClick(e, 'mode')}
-          onDelete={filters.entryMode !== 'all' ? () => clearFilter('mode') : undefined}
-          deleteIcon={<X size={14} />}
-        />
-      </Box>
-
-      {/* Active filter indicators */}
-      {activeFilters.length > 0 && (
-        <Box sx={{ mt: 1, display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-          <Typography variant="caption" color="text.secondary">
-            Filtering by:
-          </Typography>
+      {/* Active filter chips - always visible when filters are active */}
+      {hasActiveFilters && !showFilters && (
+        <Box sx={{ mt: 1, display: 'flex', gap: 0.5, flexWrap: 'wrap', alignItems: 'center' }}>
           {activeFilters.map((filter) => filter && (
             <Chip
               key={filter.type}
@@ -148,6 +120,39 @@ export default function SearchBar({ filters, onFiltersChange }: SearchBarProps) 
           ))}
         </Box>
       )}
+
+      {/* Expanded filter options */}
+      <Collapse in={showFilters}>
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
+          <Chip
+            label={filters.location || 'Location'}
+            size="small"
+            variant={filters.location ? 'filled' : 'outlined'}
+            color={filters.location ? 'primary' : 'default'}
+            onClick={(e) => handleFilterClick(e, 'location')}
+            onDelete={filters.location ? () => clearFilter('location') : undefined}
+            deleteIcon={<X size={14} />}
+          />
+          <Chip
+            label={filters.species || 'Species'}
+            size="small"
+            variant={filters.species ? 'filled' : 'outlined'}
+            color={filters.species ? 'primary' : 'default'}
+            onClick={(e) => handleFilterClick(e, 'species')}
+            onDelete={filters.species ? () => clearFilter('species') : undefined}
+            deleteIcon={<X size={14} />}
+          />
+          <Chip
+            label={filters.entryMode === 'all' ? 'Entry Type' : filters.entryMode}
+            size="small"
+            variant={filters.entryMode !== 'all' ? 'filled' : 'outlined'}
+            color={filters.entryMode !== 'all' ? 'primary' : 'default'}
+            onClick={(e) => handleFilterClick(e, 'mode')}
+            onDelete={filters.entryMode !== 'all' ? () => clearFilter('mode') : undefined}
+            deleteIcon={<X size={14} />}
+          />
+        </Box>
+      </Collapse>
 
       {/* Filter menu */}
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
