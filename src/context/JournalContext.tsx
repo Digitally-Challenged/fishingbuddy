@@ -1,37 +1,43 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
-import { FormData } from '../types';
+import { JournalEntry } from '../types';
 import { sampleEntries } from '../data/sampleData';
 import { storageUtils } from '../utils/storage';
 
 interface JournalState {
-  entries: FormData[];
+  entries: JournalEntry[];
   error: string | null;
   darkMode: boolean;
 }
 
-type JournalAction = 
-  | { type: 'ADD_ENTRY'; payload: FormData }
-  | { type: 'DELETE_ENTRY'; payload: number }
-  | { type: 'LOAD_ENTRIES'; payload: FormData[] }
-  | { type: 'IMPORT_ENTRIES'; payload: FormData[] }
+type JournalAction =
+  | { type: 'ADD_ENTRY'; payload: JournalEntry }
+  | { type: 'UPDATE_ENTRY'; payload: JournalEntry }
+  | { type: 'DELETE_ENTRY'; payload: string } // Changed to string ID
+  | { type: 'LOAD_ENTRIES'; payload: JournalEntry[] }
+  | { type: 'IMPORT_ENTRIES'; payload: JournalEntry[] }
   | { type: 'CLEAR_ENTRIES' }
   | { type: 'SET_ERROR'; payload: string }
   | { type: 'TOGGLE_DARK_MODE' };
 
 const initialState: JournalState = {
-  entries: storageUtils.loadEntries(),
+  entries: [],
   error: null,
   darkMode: storageUtils.loadDarkMode() ?? window.matchMedia('(prefers-color-scheme: dark)').matches,
 };
 
-const JournalContext = createContext<{
+interface JournalContextValue {
   state: JournalState;
   dispatch: React.Dispatch<JournalAction>;
+  addEntry: (entry: JournalEntry) => void;
+  updateEntry: (entry: JournalEntry) => void;
+  deleteEntry: (id: string) => void;
   exportEntries: () => void;
   importEntries: (file: File) => Promise<void>;
   clearEntries: () => void;
   toggleDarkMode: () => void;
-} | undefined>(undefined);
+}
+
+const JournalContext = createContext<JournalContextValue | undefined>(undefined);
 
 function journalReducer(state: JournalState, action: JournalAction): JournalState {
   try {
@@ -45,10 +51,21 @@ function journalReducer(state: JournalState, action: JournalAction): JournalStat
           error: null,
         };
         break;
+      case 'UPDATE_ENTRY':
+        newState = {
+          ...state,
+          entries: state.entries.map(entry =>
+            entry.id === action.payload.id
+              ? { ...action.payload, updatedAt: new Date().toISOString() }
+              : entry
+          ),
+          error: null,
+        };
+        break;
       case 'DELETE_ENTRY':
         newState = {
           ...state,
-          entries: state.entries.filter((_, index) => index !== action.payload),
+          entries: state.entries.filter(entry => entry.id !== action.payload),
           error: null,
         };
         break;
@@ -89,7 +106,6 @@ function journalReducer(state: JournalState, action: JournalAction): JournalStat
         return state;
     }
 
-    // Save to localStorage whenever state changes
     storageUtils.saveEntries(newState.entries);
     return newState;
   } catch (error) {
@@ -104,13 +120,25 @@ function journalReducer(state: JournalState, action: JournalAction): JournalStat
 export function JournalProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(journalReducer, initialState);
 
+  const addEntry = (entry: JournalEntry) => {
+    dispatch({ type: 'ADD_ENTRY', payload: entry });
+  };
+
+  const updateEntry = (entry: JournalEntry) => {
+    dispatch({ type: 'UPDATE_ENTRY', payload: entry });
+  };
+
+  const deleteEntry = (id: string) => {
+    dispatch({ type: 'DELETE_ENTRY', payload: id });
+  };
+
   const exportEntries = () => {
     try {
       storageUtils.exportEntries();
     } catch (error) {
-      dispatch({ 
-        type: 'SET_ERROR', 
-        payload: error instanceof Error ? error.message : 'Failed to export entries' 
+      dispatch({
+        type: 'SET_ERROR',
+        payload: error instanceof Error ? error.message : 'Failed to export entries',
       });
     }
   };
@@ -120,9 +148,9 @@ export function JournalProvider({ children }: { children: ReactNode }) {
       const entries = await storageUtils.importEntries(file);
       dispatch({ type: 'IMPORT_ENTRIES', payload: entries });
     } catch (error) {
-      dispatch({ 
-        type: 'SET_ERROR', 
-        payload: error instanceof Error ? error.message : 'Failed to import entries' 
+      dispatch({
+        type: 'SET_ERROR',
+        payload: error instanceof Error ? error.message : 'Failed to import entries',
       });
     }
   };
@@ -132,9 +160,9 @@ export function JournalProvider({ children }: { children: ReactNode }) {
       storageUtils.clearEntries();
       dispatch({ type: 'CLEAR_ENTRIES' });
     } catch (error) {
-      dispatch({ 
-        type: 'SET_ERROR', 
-        payload: error instanceof Error ? error.message : 'Failed to clear entries' 
+      dispatch({
+        type: 'SET_ERROR',
+        payload: error instanceof Error ? error.message : 'Failed to clear entries',
       });
     }
   };
@@ -143,32 +171,36 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'TOGGLE_DARK_MODE' });
   };
 
-  // Load entries from localStorage on mount
   useEffect(() => {
     try {
       const entries = storageUtils.loadEntries();
-      if (entries.length === 0 && state.entries.length === 0) {
-        dispatch({ type: 'LOAD_ENTRIES', payload: sampleEntries });
+      if (entries.length === 0) {
+        dispatch({ type: 'LOAD_ENTRIES', payload: sampleEntries as JournalEntry[] });
       } else {
         dispatch({ type: 'LOAD_ENTRIES', payload: entries });
       }
     } catch (error) {
-      dispatch({ 
-        type: 'SET_ERROR', 
-        payload: error instanceof Error ? error.message : 'Failed to load entries' 
+      dispatch({
+        type: 'SET_ERROR',
+        payload: error instanceof Error ? error.message : 'Failed to load entries',
       });
     }
   }, []);
 
   return (
-    <JournalContext.Provider value={{ 
-      state, 
-      dispatch, 
-      exportEntries, 
-      importEntries, 
-      clearEntries,
-      toggleDarkMode
-    }}>
+    <JournalContext.Provider
+      value={{
+        state,
+        dispatch,
+        addEntry,
+        updateEntry,
+        deleteEntry,
+        exportEntries,
+        importEntries,
+        clearEntries,
+        toggleDarkMode,
+      }}
+    >
       {children}
     </JournalContext.Provider>
   );
