@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Paper, Typography, Grid, Box, Chip } from '@mui/material';
+import { Paper, Typography, Box, Chip } from '@mui/material';
 import { Fish, MapPin, Droplets, Calendar, TrendingUp, Award } from 'lucide-react';
 import { useJournal } from '../../context/JournalContext';
 
@@ -52,68 +52,43 @@ export default function JournalStats() {
   }, [state.entries]);
 
   return (
-    <Paper sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Statistics
-      </Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <StatBox icon={<Fish size={20} />} label="Total Catches" value={stats.totalCatches} />
-        </Grid>
-        <Grid item xs={6}>
-          <StatBox icon={<MapPin size={20} />} label="Locations" value={stats.uniqueLocations} />
-        </Grid>
-        <Grid item xs={6}>
-          <StatBox icon={<Droplets size={20} />} label="Species" value={stats.uniqueSpecies} />
-        </Grid>
-        <Grid item xs={6}>
-          <StatBox icon={<Calendar size={20} />} label="Total Trips" value={stats.totalTrips} />
-        </Grid>
-      </Grid>
+    <Paper sx={{ p: 2 }}>
+      {/* Horizontal stats row */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
+        <StatBox icon={<Fish size={18} />} label="Catches" value={stats.totalCatches} />
+        <StatBox icon={<MapPin size={18} />} label="Locations" value={stats.uniqueLocations} />
+        <StatBox icon={<Droplets size={18} />} label="Species" value={stats.uniqueSpecies} />
+        <StatBox icon={<Calendar size={18} />} label="Trips" value={stats.totalTrips} />
+        {stats.totalTrips > 0 && (
+          <StatBox icon={<Award size={18} />} label="Avg/Trip" value={stats.avgCatchPerTrip} />
+        )}
+      </Box>
 
-      {/* Insights */}
-      {stats.totalTrips > 0 && (
-        <Box sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: 'divider' }}>
-          <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <TrendingUp size={14} /> Insights
-          </Typography>
-
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 1 }}>
-            <InsightRow
-              icon={<Award size={14} />}
-              label="Avg catch/trip"
-              value={stats.avgCatchPerTrip}
-            />
-            {stats.topLocation && (
-              <InsightRow
-                icon={<MapPin size={14} />}
-                label="Most visited"
-                value={stats.topLocation[0]}
-                count={stats.topLocation[1]}
-              />
-            )}
-            {stats.topBait && (
-              <InsightRow
-                icon={<Fish size={14} />}
-                label="Top bait"
-                value={stats.topBait[0]}
-                count={stats.topBait[1]}
-              />
-            )}
+      {/* Compact insights row */}
+      {stats.totalTrips > 0 && (stats.topLocation || stats.topBait || stats.topSpecies.length > 0) && (
+        <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider', display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary' }}>
+            <TrendingUp size={14} />
+            <Typography variant="caption">Insights:</Typography>
           </Box>
-
-          {stats.topSpecies.length > 0 && (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="caption" color="text.secondary">
-                Top species:
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
-                {stats.topSpecies.map(([species, count]) => (
-                  <Chip key={species} label={`${species} (${count})`} size="small" variant="outlined" />
-                ))}
-              </Box>
-            </Box>
+          {stats.topLocation && (
+            <Chip
+              icon={<MapPin size={12} />}
+              label={`${stats.topLocation[0]} (${stats.topLocation[1]} trips)`}
+              size="small"
+              variant="outlined"
+            />
           )}
+          {stats.topBait && (
+            <Chip
+              label={`Top bait: ${stats.topBait[0]}`}
+              size="small"
+              variant="outlined"
+            />
+          )}
+          {stats.topSpecies.slice(0, 2).map(([species, count]) => (
+            <Chip key={species} label={`${species} (${count})`} size="small" variant="outlined" />
+          ))}
         </Box>
       )}
     </Paper>
@@ -134,27 +109,3 @@ function StatBox({ icon, label, value }: { icon: React.ReactNode; label: string;
   );
 }
 
-function InsightRow({
-  icon,
-  label,
-  value,
-  count,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  count?: number;
-}) {
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      <Box sx={{ color: 'text.secondary' }}>{icon}</Box>
-      <Typography variant="body2" color="text.secondary">
-        {label}:
-      </Typography>
-      <Typography variant="body2" fontWeight="medium">
-        {value}
-        {count !== undefined && ` (${count})`}
-      </Typography>
-    </Box>
-  );
-}
