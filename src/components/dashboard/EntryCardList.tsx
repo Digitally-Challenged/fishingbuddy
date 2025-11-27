@@ -1,13 +1,10 @@
 import { useState, useMemo } from 'react';
 import {
   Box,
-  Grid,
   Typography,
-  ToggleButton,
-  ToggleButtonGroup,
   Button,
 } from '@mui/material';
-import { Grid3X3, List, FileSpreadsheet } from 'lucide-react';
+import { FileSpreadsheet } from 'lucide-react';
 import { useJournal } from '../../context/JournalContext';
 import { JournalEntry } from '../../types';
 import EntryCard from './EntryCard';
@@ -19,19 +16,12 @@ interface EntryCardListProps {
 
 export default function EntryCardList({ onEdit }: EntryCardListProps) {
   const { state, deleteEntry, exportEntries } = useJournal();
-  const [viewMode, setViewMode] = useState<'compact' | 'expanded'>('expanded');
   const [filters, setFilters] = useState<SearchFilters>({
     query: '',
     location: null,
     species: null,
     entryMode: 'all',
   });
-
-  const handleViewChange = (_: React.MouseEvent<HTMLElement>, newView: 'compact' | 'expanded' | null) => {
-    if (newView !== null) {
-      setViewMode(newView);
-    }
-  };
 
   // Filter and sort entries
   const filteredEntries = useMemo(() => {
@@ -86,57 +76,34 @@ export default function EntryCardList({ onEdit }: EntryCardListProps) {
           gap: 1,
         }}
       >
-        <Typography variant="h6">
+        <Typography variant="body2" color="text.secondary">
           {hasActiveFilters
             ? `${filteredEntries.length} of ${state.entries.length} entries`
             : `${state.entries.length} entries`}
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-          <ToggleButtonGroup
-            value={viewMode}
-            exclusive
-            onChange={handleViewChange}
-            size="small"
-          >
-            <ToggleButton value="compact" aria-label="compact view">
-              <List size={18} />
-            </ToggleButton>
-            <ToggleButton value="expanded" aria-label="expanded view">
-              <Grid3X3 size={18} />
-            </ToggleButton>
-          </ToggleButtonGroup>
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<FileSpreadsheet size={16} />}
-            onClick={exportEntries}
-            disabled={state.entries.length === 0}
-          >
-            Export
-          </Button>
-        </Box>
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<FileSpreadsheet size={16} />}
+          onClick={exportEntries}
+          disabled={state.entries.length === 0}
+        >
+          Export
+        </Button>
       </Box>
 
-      {/* Cards Grid */}
+      {/* Entry rows */}
       {filteredEntries.length > 0 ? (
-        <Grid container spacing={2}>
+        <Box>
           {filteredEntries.map((entry) => (
-            <Grid
-              item
-              xs={12}
-              sm={viewMode === 'compact' ? 12 : 6}
-              md={viewMode === 'compact' ? 6 : 4}
+            <EntryCard
               key={entry.id}
-            >
-              <EntryCard
-                entry={entry}
-                onEdit={onEdit}
-                onDelete={deleteEntry}
-                compact={viewMode === 'compact'}
-              />
-            </Grid>
+              entry={entry}
+              onEdit={onEdit}
+              onDelete={deleteEntry}
+            />
           ))}
-        </Grid>
+        </Box>
       ) : (
         <Box
           sx={{
