@@ -133,4 +133,69 @@ export const storageUtils = {
       console.error('Failed to save dark mode preference:', error);
     }
   },
+
+  exportEntriesAsCSV: (): void => {
+    try {
+      const entries = storageUtils.loadEntries();
+      if (entries.length === 0) {
+        throw new Error('No entries to export');
+      }
+
+      const headers = [
+        'Date',
+        'Location',
+        'Species',
+        'Count',
+        'Bait',
+        'Weather',
+        'Water Clarity',
+        'Water Temp (°F)',
+        'Flow Rate',
+        'Notes',
+        'Entry Type',
+      ];
+
+      const rows = entries.map((e) => [
+        e.date,
+        e.streamName,
+        e.fishSpecies,
+        e.numberCaught ?? '',
+        e.baitUsed,
+        e.weatherConditions,
+        e.waterClarity,
+        e.waterTemperature ?? '',
+        e.flowRate ?? '',
+        `"${(e.notes || '').replace(/"/g, '""')}"`,
+        e.entryMode,
+      ]);
+
+      const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+      const dataUri = `data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`;
+      const fileName = `fishing-journal-${new Date().toISOString().split('T')[0]}.csv`;
+
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', fileName);
+      linkElement.click();
+    } catch (error) {
+      console.error('Error exporting CSV:', error);
+      throw new Error('Failed to export CSV');
+    }
+  },
+
+  copyEntriesToClipboard: async (): Promise<void> => {
+    try {
+      const entries = storageUtils.loadEntries();
+      const text = entries
+        .map(
+          (e) =>
+            `${e.date} - ${e.streamName}: ${e.fishSpecies || 'No catch'} ${e.numberCaught ? `(${e.numberCaught})` : ''} - ${e.baitUsed || 'N/A'}`
+        )
+        .join('\n');
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      console.error('Error copying to clipboard:', error);
+      throw new Error('Failed to copy to clipboard');
+    }
+  },
 };
