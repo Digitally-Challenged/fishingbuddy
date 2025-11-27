@@ -1,48 +1,45 @@
-import { 
-  Paper, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
   TableRow,
   IconButton,
   Tooltip,
   Box,
   Button,
-  Typography
+  Typography,
 } from '@mui/material';
 import { Trash2, FileSpreadsheet } from 'lucide-react';
 import { useJournal } from '../../context/JournalContext';
 import dayjs from 'dayjs';
-import { exportToExcel } from '../../utils/excelUtils';
 
 export default function JournalEntryList() {
-  const { state, dispatch } = useJournal();
+  const { state, deleteEntry, exportEntries } = useJournal();
 
-  const handleDelete = (index: number) => {
-    dispatch({ type: 'DELETE_ENTRY', payload: index });
-  };
-
-  const handleExport = () => {
-    exportToExcel(state.entries);
+  const handleDelete = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this entry?')) {
+      deleteEntry(id);
+    }
   };
 
   return (
     <Paper sx={{ p: 3 }}>
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        mb: 2 
-      }}>
-        <Typography variant="h6">
-          Journal Entries
-        </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+        }}
+      >
+        <Typography variant="h6">Journal Entries</Typography>
         <Button
           variant="outlined"
           startIcon={<FileSpreadsheet size={18} />}
-          onClick={handleExport}
+          onClick={exportEntries}
           disabled={state.entries.length === 0}
           sx={{ ml: 2 }}
         >
@@ -62,19 +59,19 @@ export default function JournalEntryList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {state.entries.map((entry, index) => (
-              <TableRow key={index}>
+            {state.entries.map((entry) => (
+              <TableRow key={entry.id}>
                 <TableCell>{dayjs(entry.date).format('MMM D, YYYY')}</TableCell>
                 <TableCell>{entry.streamName}</TableCell>
                 <TableCell>{entry.fishSpecies || '-'}</TableCell>
-                <TableCell>{entry.numberCaught || '0'}</TableCell>
+                <TableCell>{entry.numberCaught ?? '0'}</TableCell>
                 <TableCell>{entry.weatherConditions || '-'}</TableCell>
                 <TableCell>
                   <Tooltip title="Delete entry">
-                    <IconButton 
-                      size="small" 
+                    <IconButton
+                      size="small"
                       color="error"
-                      onClick={() => handleDelete(index)}
+                      onClick={() => handleDelete(entry.id)}
                     >
                       <Trash2 size={18} />
                     </IconButton>
