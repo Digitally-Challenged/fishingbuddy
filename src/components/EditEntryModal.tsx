@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { JournalEntry } from '../types';
 import { useJournal } from '../context/JournalContext';
+import { useToast } from '../context/ToastContext';
 
 interface EditEntryModalProps {
   entry: JournalEntry | null;
@@ -20,6 +21,7 @@ interface EditEntryModalProps {
 
 export default function EditEntryModal({ entry, open, onClose }: EditEntryModalProps) {
   const { state, updateEntry } = useJournal();
+  const { showSuccess } = useToast();
   const [formData, setFormData] = useState<JournalEntry | null>(null);
 
   // Get autocomplete options
@@ -45,6 +47,7 @@ export default function EditEntryModal({ entry, open, onClose }: EditEntryModalP
   const handleSave = () => {
     if (formData) {
       updateEntry(formData);
+      showSuccess('Entry updated');
       onClose();
     }
   };

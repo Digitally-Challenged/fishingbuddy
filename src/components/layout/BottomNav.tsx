@@ -23,6 +23,7 @@ export default function BottomNav({ value, onChange }: BottomNavProps) {
         showLabels
         value={value}
         onChange={(_, newValue) => onChange(newValue)}
+        aria-label="Main navigation"
       >
         <BottomNavigationAction
           label="Stats"

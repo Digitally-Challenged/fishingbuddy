@@ -8,9 +8,14 @@ import { useJournalForm } from '../hooks/useJournalForm';
 import NotesSection from './sections/NotesSection';
 import PictureUpload from './sections/PictureUpload';
 import WifesMoodSection from './sections/WifesMoodSection';
+import { useToast } from '../context/ToastContext';
 
 export default function FishingJournalForm() {
-  const { formData, errors, handleChange, handleSubmit, handlePictureChange } = useJournalForm();
+  const { showSuccess } = useToast();
+  const { formData, errors, handleChange, handleSubmit, handlePictureChange } = useJournalForm({
+    mode: 'full',
+    onSuccess: () => showSuccess('Journal entry saved!'),
+  });
 
   return (
     <Paper component="form" onSubmit={handleSubmit} elevation={2} sx={{ p: 4 }}>

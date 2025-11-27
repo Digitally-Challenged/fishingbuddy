@@ -13,6 +13,7 @@ import Layout from './components/layout/Layout';
 import BottomNav from './components/layout/BottomNav';
 import { baseTheme, darkThemeOverrides } from './theme/baseTheme';
 import { JournalProvider, useJournal } from './context/JournalContext';
+import { ToastProvider } from './context/ToastContext';
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState(0);
@@ -108,7 +109,9 @@ export default function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <JournalProvider>
-        <AppContent />
+        <ToastProvider>
+          <AppContent />
+        </ToastProvider>
       </JournalProvider>
     </LocalizationProvider>
   );

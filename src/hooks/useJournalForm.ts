@@ -2,7 +2,13 @@ import { useState } from 'react';
 import { JournalEntry, FormErrors, Picture, FormChangeHandler, createEmptyEntry } from '../types';
 import { useJournal } from '../context/JournalContext';
 
-export function useJournalForm(mode: 'quick' | 'full' = 'full') {
+interface UseJournalFormOptions {
+  mode?: 'quick' | 'full';
+  onSuccess?: () => void;
+}
+
+export function useJournalForm(options: UseJournalFormOptions = {}) {
+  const { mode = 'full', onSuccess } = options;
   const [formData, setFormData] = useState<JournalEntry>(createEmptyEntry(mode));
   const [errors, setErrors] = useState<FormErrors>({});
   const { addEntry } = useJournal();
@@ -54,8 +60,7 @@ export function useJournalForm(mode: 'quick' | 'full' = 'full') {
         updatedAt: new Date().toISOString(),
       });
       setFormData(createEmptyEntry(mode));
-      // TODO: Replace with toast notification
-      alert('Journal entry saved successfully!');
+      onSuccess?.();
     }
   };
 

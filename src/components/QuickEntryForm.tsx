@@ -10,11 +10,21 @@ import {
 import { Plus, Save } from 'lucide-react';
 import { useJournalForm } from '../hooks/useJournalForm';
 import { useJournal } from '../context/JournalContext';
+import { useToast } from '../context/ToastContext';
 
 export default function QuickEntryForm() {
-  const { formData, errors, handleChange, handleSubmit, resetForm } = useJournalForm('quick');
-  const { state } = useJournal();
+  const { showSuccess } = useToast();
   const [showAddAnother, setShowAddAnother] = useState(false);
+
+  const { formData, errors, handleChange, handleSubmit, resetForm } = useJournalForm({
+    mode: 'quick',
+    onSuccess: () => {
+      showSuccess('Entry saved!');
+      setShowAddAnother(true);
+    },
+  });
+
+  const { state } = useJournal();
 
   // Get unique locations and species from existing entries for autocomplete
   const locations = [...new Set(state.entries.map((e) => e.streamName))].filter(Boolean);
@@ -22,9 +32,7 @@ export default function QuickEntryForm() {
   const baits = [...new Set(state.entries.map((e) => e.baitUsed))].filter(Boolean);
 
   const handleQuickSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
     handleSubmit(e);
-    setShowAddAnother(true);
   };
 
   const handleAddAnother = () => {

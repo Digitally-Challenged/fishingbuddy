@@ -79,6 +79,7 @@ export default function SearchBar({ filters, onFiltersChange }: SearchBarProps) 
         onChange={(e) => onFiltersChange({ ...filters, query: e.target.value })}
         size="small"
         fullWidth
+        aria-label="Search journal entries"
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -91,6 +92,7 @@ export default function SearchBar({ filters, onFiltersChange }: SearchBarProps) 
                 size="small"
                 onClick={(e) => handleFilterClick(e, 'location')}
                 color={filters.location ? 'primary' : 'default'}
+                aria-label="Filter by location"
               >
                 <Filter size={18} />
               </IconButton>

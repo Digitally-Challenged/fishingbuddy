@@ -11,6 +11,7 @@ import {
 import { MapPin, Fish, Anchor, Cloud, Edit2, Trash2 } from 'lucide-react';
 import dayjs from 'dayjs';
 import { JournalEntry } from '../../types';
+import { useToast } from '../../context/ToastContext';
 
 interface EntryCardProps {
   entry: JournalEntry;
@@ -20,9 +21,12 @@ interface EntryCardProps {
 }
 
 export default function EntryCard({ entry, onEdit, onDelete, compact = false }: EntryCardProps) {
+  const { showSuccess } = useToast();
+
   const handleDelete = () => {
     if (window.confirm(`Delete trip to ${entry.streamName} on ${dayjs(entry.date).format('MMM D, YYYY')}?`)) {
       onDelete(entry.id);
+      showSuccess('Entry deleted');
     }
   };
 
