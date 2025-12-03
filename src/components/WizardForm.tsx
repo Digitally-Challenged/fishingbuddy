@@ -9,15 +9,15 @@ import {
   Typography, 
   MobileStepper 
 } from '@mui/material';
-import { 
-  KeyboardArrowLeft, 
-  KeyboardArrowRight, 
-  Save, 
-  MapPin, 
-  Cloud, 
-  Droplets, 
-  Fish, 
-  Camera 
+import {
+  ChevronLeft,
+  ChevronRight,
+  Save,
+  MapPin,
+  Cloud,
+  Droplets,
+  Fish,
+  Camera
 } from 'lucide-react';
 import WeatherSection from './sections/WeatherSection';
 import WaterConditionsSection from './sections/WaterConditionsSection';
@@ -173,7 +173,7 @@ export default function WizardForm() {
             color="inherit"
             disabled={activeStep === 0}
             onClick={handleBack}
-            startIcon={<KeyboardArrowLeft />}
+            startIcon={<ChevronLeft size={18} />}
             variant="outlined"
           >
             Back
@@ -193,7 +193,7 @@ export default function WizardForm() {
             <Button
               onClick={handleNext}
               variant="contained"
-              endIcon={<KeyboardArrowRight />}
+              endIcon={<ChevronRight size={18} />}
             >
               Next
             </Button>

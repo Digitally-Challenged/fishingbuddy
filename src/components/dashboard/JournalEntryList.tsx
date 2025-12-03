@@ -7,11 +7,22 @@ import {
   ToggleButtonGroup,
   Pagination,
   InputAdornment,
-  TextField
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Tooltip,
+  Chip
 } from '@mui/material';
-import { LayoutGrid, List as ListIcon, Search } from 'lucide-react';
+import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind } from 'lucide-react';
 import { useJournal } from '../../context/JournalContext';
 import JournalEntryCard from './JournalEntryCard';
+import dayjs from 'dayjs';
 
 export default function JournalEntryList() {
   const { state, dispatch } = useJournal();
@@ -112,21 +123,97 @@ export default function JournalEntryList() {
         </Box>
       ) : (
         <>
-          <Grid container spacing={3}>
-            {currentEntries.map((entry, index) => {
-              // Calculate original index for deletion since we're paginating/filtering
-              const originalIndex = state.entries.indexOf(entry);
-              
-              return (
-                <Grid item xs={12} sm={6} md={4} key={`${entry.date}-${index}`}>
-                  <JournalEntryCard 
-                    entry={entry} 
-                    onDelete={() => handleDelete(originalIndex)}
-                  />
-                </Grid>
-              );
-            })}
-          </Grid>
+          {viewMode === 'grid' ? (
+            <Grid container spacing={3}>
+              {currentEntries.map((entry, index) => {
+                const originalIndex = state.entries.indexOf(entry);
+                return (
+                  <Grid item xs={12} sm={6} md={4} key={`${entry.date}-${index}`}>
+                    <JournalEntryCard 
+                      entry={entry} 
+                      onDelete={() => handleDelete(originalIndex)}
+                    />
+                  </Grid>
+                );
+              })}
+            </Grid>
+          ) : (
+            <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+              <Table sx={{ minWidth: 650 }} aria-label="journal entries table">
+                <TableHead sx={{ bgcolor: 'action.hover' }}>
+                  <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Location</TableCell>
+                    <TableCell>Weather</TableCell>
+                    <TableCell>Catch</TableCell>
+                    <TableCell>Water</TableCell>
+                    <TableCell align="right">Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {currentEntries.map((entry, index) => {
+                    const originalIndex = state.entries.indexOf(entry);
+                    return (
+                      <TableRow
+                        key={`${entry.date}-${index}`}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell component="th" scope="row">
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Calendar size={16} className="text-slate-400" />
+                            {dayjs(entry.date).format('MMM D, YYYY')}
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <MapPin size={16} className="text-slate-400" />
+                            {entry.streamName}
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          {entry.weatherConditions && (
+                            <Chip 
+                              icon={<Wind size={14} />} 
+                              label={entry.weatherConditions} 
+                              size="small" 
+                              variant="outlined"
+                              sx={{ borderColor: 'divider' }}
+                            />
+                          )}
+                        </TableCell>
+                        <TableCell>
+                           {entry.fishSpecies && (
+                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                               <Fish size={16} className="text-blue-500" />
+                               <Typography variant="body2">
+                                 {entry.numberCaught} {entry.fishSpecies}
+                               </Typography>
+                             </Box>
+                           )}
+                        </TableCell>
+                        <TableCell>
+                          {(entry.flowRate || entry.waterTemperature) && (
+                            <Typography variant="body2" color="text.secondary">
+                              {entry.flowRate && `${entry.flowRate} cfs`}
+                              {entry.flowRate && entry.waterTemperature && ' • '}
+                              {entry.waterTemperature && `${entry.waterTemperature}°F`}
+                            </Typography>
+                          )}
+                        </TableCell>
+                        <TableCell align="right">
+                          <Tooltip title="Delete">
+                            <IconButton onClick={() => handleDelete(originalIndex)} color="error" size="small">
+                              <Trash2 size={18} />
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
           
           {pageCount > 1 && (
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
