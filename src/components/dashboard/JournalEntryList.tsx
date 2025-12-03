@@ -102,7 +102,7 @@ export default function JournalEntryList() {
             exclusive
             onChange={(_, value) => value && setViewMode(value)}
             size="small"
-            sx={{ bgcolor: 'background.paper' }}
+            sx={{ bgcolor: 'background.paper', display: 'none' }}
           >
             <ToggleButton value="grid" aria-label="grid view">
               <LayoutGrid size={18} />
@@ -132,21 +132,6 @@ export default function JournalEntryList() {
         </Box>
       ) : (
         <>
-          {viewMode === 'grid' ? (
-            <Grid container spacing={3}>
-              {currentEntries.map((entry, index) => {
-                const originalIndex = state.entries.indexOf(entry);
-                return (
-                  <Grid item xs={12} sm={6} md={4} key={`${entry.date}-${index}`}>
-                    <JournalEntryCard 
-                      entry={entry} 
-                      onDelete={() => handleDelete(originalIndex)}
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
-          ) : (
             <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
               <Table sx={{ minWidth: 1000 }} aria-label="journal entries table">
                 <TableHead sx={{ bgcolor: 'action.hover' }}>
@@ -290,7 +275,6 @@ export default function JournalEntryList() {
                 </TableBody>
               </Table>
             </TableContainer>
-          )}
           
           {pageCount > 1 && (
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
