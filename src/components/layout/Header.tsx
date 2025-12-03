@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AppBar, Toolbar, Typography, Box, Container, IconButton, Button, Stack } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, Container, IconButton, Button, Stack, alpha } from '@mui/material';
 import { Fish, Menu, ExternalLink } from 'lucide-react';
 import MobileMenu from './MobileMenu';
 import { useJournal } from '../../context/JournalContext';
@@ -32,7 +32,8 @@ export default function Header({ onNavigate }: HeaderProps) {
           borderBottom: '1px solid',
           borderColor: 'divider',
           backdropFilter: 'blur(20px)',
-          backgroundColor: 'rgba(255,255,255,0.8)'
+          backgroundColor: (theme) => alpha(theme.palette.background.default, 0.8), // Dynamic background color
+          color: 'text.primary',
         }}
       >
         <Container maxWidth="xl">
