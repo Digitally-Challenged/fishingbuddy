@@ -38,11 +38,24 @@ const steps = [
   { label: 'Memories', icon: <Camera size={20} /> },
 ];
 
-export default function WizardForm() {
-  const { formData, errors, handleChange, handleSubmit, handlePictureChange } = useJournalForm();
+interface WizardFormProps {
+  onClose?: () => void;
+}
+
+export default function WizardForm({ onClose }: WizardFormProps) {
+  const { formData, errors, handleChange, handleSubmit: originalSubmit, handlePictureChange } = useJournalForm();
   const [activeStep, setActiveStep] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleSubmit = (e: React.FormEvent) => {
+    // Wrap the submit handler to close the modal on success
+    originalSubmit(e);
+    // In a real app we'd wait for success, but here it's synchronous state update
+    if (onClose) {
+      onClose();
+    }
+  };
 
   const handleNext = () => {
     // Basic validation before proceeding from first step
@@ -123,7 +136,7 @@ export default function WizardForm() {
 
   return (
     <Paper 
-      elevation={2} 
+      elevation={0} // Removed elevation since it will be in a dialog
       sx={{ 
         p: { xs: 2, md: 4 }, 
         maxWidth: 800, 
@@ -203,4 +216,3 @@ export default function WizardForm() {
     </Paper>
   );
 }
-
