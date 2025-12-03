@@ -15,6 +15,12 @@ export interface FormData {
   notes: string;
   pictures: Picture[];
   wifesMood: string;
+  // Weather backfill fields
+  airTempHigh: string;
+  airTempLow: string;
+  barometricPressure: string;
+  moonPhase: string;
+  precipitation: string;
 }
 
 export interface Picture {

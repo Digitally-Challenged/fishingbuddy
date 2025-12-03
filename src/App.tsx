@@ -3,10 +3,11 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Container, CssBaseline, Box, Tabs, Tab } from '@mui/material';
-import FishingJournalForm from './components/FishingJournalForm';
+import FishingJournalForm from './components/WizardForm';
 import Dashboard from './components/Dashboard';
 import Layout from './components/layout/Layout';
-import { baseTheme, darkThemeOverrides } from './theme/baseTheme';
+import { modernTheme } from './theme/modernTheme';
+import { darkThemeOverrides } from './theme/baseTheme';
 import { JournalProvider, useJournal } from './context/JournalContext';
 
 function AppContent() {
@@ -16,8 +17,8 @@ function AppContent() {
   const theme = useMemo(
     () =>
       createTheme({
-        ...baseTheme,
-        ...(darkMode ? darkThemeOverrides : {}),
+        ...modernTheme, // Switch to modern theme base
+        ...(darkMode ? darkThemeOverrides : {}), // Keep dark mode support for now, though it might need tweaking
       }),
     [darkMode]
   );
@@ -30,7 +31,7 @@ function AppContent() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Layout onNavigate={handleNavigate}>
-        <Container maxWidth="lg">
+        <Container maxWidth={false} sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
             <Tabs 
               value={activeTab} 

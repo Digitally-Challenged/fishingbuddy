@@ -26,7 +26,7 @@ export default function RequiredInfoSection({ formData, errors, handleChange }: 
                 name: 'date',
                 value: newValue ? newValue.format('YYYY-MM-DD') : '',
               },
-            } as any);
+            } as React.ChangeEvent<HTMLInputElement>);
           }}
           slotProps={{
             textField: {

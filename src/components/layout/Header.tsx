@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { AppBar, Toolbar, Typography, Box, Container, IconButton } from '@mui/material';
-import { Fish, Menu, Sun, Moon } from 'lucide-react';
+import { AppBar, Toolbar, Typography, Box, Container, IconButton, Button, Stack } from '@mui/material';
+import { Fish, Menu, ExternalLink } from 'lucide-react';
 import MobileMenu from './MobileMenu';
 import { useJournal } from '../../context/JournalContext';
 
@@ -10,7 +10,8 @@ interface HeaderProps {
 
 export default function Header({ onNavigate }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { state: { darkMode }, toggleDarkMode } = useJournal();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { state: { darkMode }, toggleDarkMode } = useJournal(); // Keep for logic, but maybe hide toggle for now if theme is fixed
 
   const handleMenuOpen = () => {
     setMobileMenuOpen(true);
@@ -22,63 +23,86 @@ export default function Header({ onNavigate }: HeaderProps) {
 
   return (
     <>
-      <AppBar position="static" sx={{ mb: 4 }}>
-        <Container maxWidth="lg">
-          <Toolbar disableGutters>
-            <Fish size={32} />
-            <Typography
-              variant="h5"
-              component="h1"
-              sx={{
-                ml: 2,
-                flexGrow: 1,
-                fontWeight: 600,
-                letterSpacing: '0.5px',
+      <AppBar 
+        position="sticky" 
+        color="inherit" 
+        elevation={0} 
+        sx={{ 
+          mb: 4, 
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+          backdropFilter: 'blur(20px)',
+          backgroundColor: 'rgba(255,255,255,0.8)'
+        }}
+      >
+        <Container maxWidth="xl">
+          <Toolbar disableGutters sx={{ minHeight: '72px' }}>
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 1.5,
+                color: 'primary.main',
+                cursor: 'pointer'
               }}
+              onClick={() => onNavigate(0)}
             >
-              Fishing Journal
-            </Typography>
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3, alignItems: 'center' }}>
+              <Box sx={{ 
+                p: 1, 
+                borderRadius: '12px', 
+                bgcolor: 'primary.main', 
+                color: 'white',
+                display: 'flex' 
+              }}>
+                <Fish size={24} />
+              </Box>
               <Typography
+                variant="h5"
+                component="h1"
+                sx={{
+                  fontWeight: 700,
+                  letterSpacing: '-0.5px',
+                  color: 'text.primary'
+                }}
+              >
+                Fishing Journal
+              </Typography>
+            </Box>
+
+            <Box sx={{ flexGrow: 1 }} />
+
+            <Stack direction="row" spacing={1} sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+              <Button
                 component="a"
                 href="https://waterdata.usgs.gov/nwis/rt"
                 target="_blank"
                 rel="noopener noreferrer"
-                sx={{
-                  color: 'inherit',
-                  textDecoration: 'none',
-                  '&:hover': { textDecoration: 'underline' },
-                }}
+                color="inherit"
+                endIcon={<ExternalLink size={14} />}
+                sx={{ borderRadius: '10px', px: 2 }}
               >
                 USGS Water Data
-              </Typography>
-              <Typography
+              </Button>
+              <Button
                 component="a"
                 href="https://www.weather.gov/"
                 target="_blank"
                 rel="noopener noreferrer"
-                sx={{
-                  color: 'inherit',
-                  textDecoration: 'none',
-                  '&:hover': { textDecoration: 'underline' },
-                }}
+                color="inherit"
+                endIcon={<ExternalLink size={14} />}
+                sx={{ borderRadius: '10px', px: 2 }}
               >
                 Weather
-              </Typography>
-              <IconButton 
-                onClick={toggleDarkMode}
-                color="inherit"
-                sx={{ ml: 1 }}
-              >
-                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-              </IconButton>
-            </Box>
-            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+              </Button>
+            </Stack>
+
+            <Box sx={{ display: { xs: 'flex', md: 'none' }, ml: 1 }}>
               <IconButton
                 size="large"
                 color="inherit"
                 aria-label="open drawer"
                 onClick={handleMenuOpen}
+                sx={{ borderRadius: '12px' }}
               >
                 <Menu />
               </IconButton>

@@ -1,31 +1,32 @@
-import { Box, Typography, Grid } from '@mui/material';
+import { Box, Typography, Fade } from '@mui/material';
 import JournalEntryList from './dashboard/JournalEntryList';
 import JournalStats from './dashboard/JournalStats';
-import RecentActivity from './dashboard/RecentActivity';
+// import RecentActivity from './dashboard/RecentActivity'; // Maybe redundant with the new list view
 
 export default function Dashboard() {
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Fishing Journal Dashboard
-      </Typography>
-      
-      <Grid container spacing={4}>
-        <Grid item xs={12} lg={8}>
+    <Box sx={{ pb: 8 }}>
+      <Fade in={true} timeout={800}>
+        <Box>
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h3" component="h1" gutterBottom sx={{ 
+              fontWeight: 800, 
+              background: 'linear-gradient(45deg, #0f172a 30%, #334155 90%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}>
+              Fishing Journal Dashboard
+            </Typography>
+            <Typography variant="subtitle1" color="text.secondary" sx={{ maxWidth: 600 }}>
+              Track your conditions, analyze your catches, and improve your success on the water.
+            </Typography>
+          </Box>
+          
+          <JournalStats />
+          
           <JournalEntryList />
-        </Grid>
-        
-        <Grid item xs={12} lg={4}>
-          <Grid container spacing={4}>
-            <Grid item xs={12}>
-              <JournalStats />
-            </Grid>
-            <Grid item xs={12}>
-              <RecentActivity />
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
+        </Box>
+      </Fade>
     </Box>
   );
 }

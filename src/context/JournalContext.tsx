@@ -9,7 +9,7 @@ interface JournalState {
   darkMode: boolean;
 }
 
-type JournalAction = 
+type JournalAction =
   | { type: 'ADD_ENTRY'; payload: FormData }
   | { type: 'DELETE_ENTRY'; payload: number }
   | { type: 'LOAD_ENTRIES'; payload: FormData[] }
@@ -132,9 +132,9 @@ export function JournalProvider({ children }: { children: ReactNode }) {
       storageUtils.clearEntries();
       dispatch({ type: 'CLEAR_ENTRIES' });
     } catch (error) {
-      dispatch({ 
-        type: 'SET_ERROR', 
-        payload: error instanceof Error ? error.message : 'Failed to clear entries' 
+      dispatch({
+        type: 'SET_ERROR',
+        payload: error instanceof Error ? error.message : 'Failed to clear entries'
       });
     }
   };
@@ -161,11 +161,11 @@ export function JournalProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <JournalContext.Provider value={{ 
-      state, 
-      dispatch, 
-      exportEntries, 
-      importEntries, 
+    <JournalContext.Provider value={{
+      state,
+      dispatch,
+      exportEntries,
+      importEntries,
       clearEntries,
       toggleDarkMode
     }}>
