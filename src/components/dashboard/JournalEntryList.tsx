@@ -26,7 +26,7 @@ import {
   Button,
   Divider
 } from '@mui/material';
-import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, Thermometer, Gauge, Moon, CloudRain } from 'lucide-react';
+import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, Thermometer, Gauge, Moon, CloudRain, ArrowUpDown } from 'lucide-react';
 import { FormData } from '../../types';
 import { useJournal } from '../../context/JournalContext';
 import JournalEntryCard from './JournalEntryCard';
@@ -34,12 +34,17 @@ import dayjs from 'dayjs';
 
 export default function JournalEntryList() {
   const { state, dispatch } = useJournal();
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+  const [viewMode] = useState<'grid' | 'list'>('list');
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEntry, setSelectedEntry] = useState<FormData | null>(null);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const entriesPerPage = 9;
+
+  const handleSortToggle = () => {
+    setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+  };
 
   const handleDelete = (index: number) => {
     if (window.confirm('Are you sure you want to delete this entry?')) {
@@ -54,6 +59,10 @@ export default function JournalEntryList() {
       entry.fishSpecies?.toLowerCase().includes(searchLower) ||
       entry.notes?.toLowerCase().includes(searchLower)
     );
+  }).sort((a, b) => {
+    const dateA = dayjs(a.date).valueOf();
+    const dateB = dayjs(b.date).valueOf();
+    return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
   });
 
   const pageCount = Math.ceil(filteredEntries.length / entriesPerPage);
@@ -136,7 +145,12 @@ export default function JournalEntryList() {
               <Table sx={{ minWidth: 1000 }} aria-label="journal entries table">
                 <TableHead sx={{ bgcolor: 'action.hover' }}>
                   <TableRow>
-                    <TableCell>Date</TableCell>
+                    <TableCell onClick={handleSortToggle} sx={{ cursor: 'pointer', userSelect: 'none' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        Date
+                        <ArrowUpDown size={14} className={sortOrder === 'asc' ? 'text-primary' : 'text-slate-400'} />
+                      </Box>
+                    </TableCell>
                     <TableCell>Location</TableCell>
                     <TableCell>Weather & Wind</TableCell>
                     <TableCell>Water Conditions</TableCell>
