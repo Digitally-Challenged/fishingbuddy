@@ -152,7 +152,7 @@ export default function JournalEntryList() {
                       </Box>
                     </TableCell>
                     <TableCell>Location</TableCell>
-                    <TableCell>Weather & Wind</TableCell>
+                    <TableCell>Weather</TableCell>
                     <TableCell>Water Conditions</TableCell>
                     <TableCell>Catch</TableCell>
                     <TableCell>Bait</TableCell>
