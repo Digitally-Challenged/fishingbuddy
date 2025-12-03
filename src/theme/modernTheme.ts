@@ -44,7 +44,7 @@ export const modernTheme: ThemeOptions = {
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          backgroundColor: '#f1f5f9', // Slate 100
+          // backgroundColor handled by palette.background.default
           backgroundImage: 'radial-gradient(at 50% 0%, alpha(96, 165, 250, 0.1) 0px, transparent 50%)', // Subtle gradient top glow
         },
       },

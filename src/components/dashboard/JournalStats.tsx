@@ -59,7 +59,7 @@ function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label:
       display: 'flex', 
       alignItems: 'center',
       borderLeft: `4px solid ${color}`,
-      background: 'white'
+      // background: 'white' - Removed to allow theme background (paper) to take effect
     }}>
       <Box sx={{ 
         p: 1.5, 
