@@ -15,10 +15,10 @@ export default function Dashboard() {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
-              Fishing Journal Dashboard
+              Westfall Fishing Journal Dashboard
             </Typography>
-            <Typography variant="subtitle1" color="text.secondary" sx={{ maxWidth: 600 }}>
-              Track your conditions, analyze your catches, and improve your success on the water.
+            <Typography variant="subtitle1" color="text.secondary" sx={{ maxWidth: 600, fontStyle: 'italic' }}>
+              "The River giveth, and the River taketh away."
             </Typography>
           </Box>
           

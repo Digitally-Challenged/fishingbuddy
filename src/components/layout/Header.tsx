@@ -65,7 +65,7 @@ export default function Header({ onNavigate }: HeaderProps) {
                   color: 'text.primary'
                 }}
               >
-                Fishing Journal
+                Westfall Fishing Journal
               </Typography>
             </Box>
 
