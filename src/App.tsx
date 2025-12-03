@@ -16,10 +16,8 @@ function AppContent() {
 
   const theme = useMemo(
     () =>
-      createTheme({
-        ...modernTheme, // Switch to modern theme base
-        ...(darkMode ? darkThemeOverrides : {}), // Keep dark mode support for now, though it might need tweaking
-      }),
+      // Pass arguments separately to createTheme for deep merging
+      createTheme(modernTheme, darkMode ? darkThemeOverrides : {}),
     [darkMode]
   );
 
