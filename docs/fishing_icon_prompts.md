@@ -756,3 +756,554 @@ Use these JSON styles with your favorite AI image generator (Midjourney, DALL-E 
 }
 ```
 
+**Bluegill / Sunfish**
+```json
+{
+  "icon_style": {
+    "perspective": "isometric",
+    "geometry": {
+      "proportions": "1:1 ratio canvas, floating centrally",
+      "element_arrangement": "Round body sunfish with distinct opercular flap"
+    },
+    "composition": {
+      "element_count": "1 main object",
+      "spatial_depth": "layered to create sense of dimension",
+      "scale_consistency": "uniform object scale",
+      "scene_density": "minimal, high clarity"
+    },
+    "lighting": {
+      "type": "soft ambient light",
+      "light_source": "subtle top-right",
+      "shadow": "gentle drop shadows below",
+      "highlighting": "mild edge illumination"
+    },
+    "textures": {
+      "material_finish": "semi-matte",
+      "surface_treatment": "stylized naturalism",
+      "texture_realism": "stylized"
+    },
+    "render_quality": {
+      "resolution": "high-resolution octane 3D rendering",
+      "edge_definition": "crisp, no outlines",
+      "visual_clarity": "clean, readable silhouette"
+    },
+    "color_palette": {
+      "tone": "naturalistic",
+      "range": "blue, orange, olive, vertical bars",
+      "usage": "distinct colors to identify features"
+    },
+    "background": {
+      "color": "#FFFFFF",
+      "style": "pure white, flat",
+      "texture": "none"
+    },
+    "stylistic_tone": "premium, clean outdoor lifestyle",
+    "icon_behavior": {
+      "branding_alignment": "neutral",
+      "scalability": "legible at small sizes"
+    }
+  }
+}
+```
+
+**Crappie**
+```json
+{
+  "icon_style": {
+    "perspective": "isometric",
+    "geometry": {
+      "proportions": "1:1 ratio canvas, floating centrally",
+      "element_arrangement": "Deep-bodied panfish with speckled pattern"
+    },
+    "composition": {
+      "element_count": "1 main object",
+      "spatial_depth": "layered to create sense of dimension",
+      "scale_consistency": "uniform object scale",
+      "scene_density": "minimal, high clarity"
+    },
+    "lighting": {
+      "type": "soft ambient light",
+      "light_source": "subtle top-right",
+      "shadow": "gentle drop shadows below",
+      "highlighting": "mild edge illumination"
+    },
+    "textures": {
+      "material_finish": "semi-matte",
+      "surface_treatment": "stylized naturalism",
+      "texture_realism": "stylized"
+    },
+    "render_quality": {
+      "resolution": "high-resolution octane 3D rendering",
+      "edge_definition": "crisp, no outlines",
+      "visual_clarity": "clean, readable silhouette"
+    },
+    "color_palette": {
+      "tone": "naturalistic",
+      "range": "silver, black speckles (salt & pepper)",
+      "usage": "distinct colors to identify features"
+    },
+    "background": {
+      "color": "#FFFFFF",
+      "style": "pure white, flat",
+      "texture": "none"
+    },
+    "stylistic_tone": "premium, clean outdoor lifestyle",
+    "icon_behavior": {
+      "branding_alignment": "neutral",
+      "scalability": "legible at small sizes"
+    }
+  }
+}
+```
+
+**Drum (Freshwater)**
+```json
+{
+  "icon_style": {
+    "perspective": "isometric",
+    "geometry": {
+      "proportions": "1:1 ratio canvas, floating centrally",
+      "element_arrangement": "Humpbacked silver fish with subterminal mouth"
+    },
+    "composition": {
+      "element_count": "1 main object",
+      "spatial_depth": "layered to create sense of dimension",
+      "scale_consistency": "uniform object scale",
+      "scene_density": "minimal, high clarity"
+    },
+    "lighting": {
+      "type": "soft ambient light",
+      "light_source": "subtle top-right",
+      "shadow": "gentle drop shadows below",
+      "highlighting": "mild edge illumination"
+    },
+    "textures": {
+      "material_finish": "semi-matte",
+      "surface_treatment": "stylized naturalism",
+      "texture_realism": "stylized"
+    },
+    "render_quality": {
+      "resolution": "high-resolution octane 3D rendering",
+      "edge_definition": "crisp, no outlines",
+      "visual_clarity": "clean, readable silhouette"
+    },
+    "color_palette": {
+      "tone": "naturalistic",
+      "range": "silver, gray, white belly",
+      "usage": "distinct colors to identify features"
+    },
+    "background": {
+      "color": "#FFFFFF",
+      "style": "pure white, flat",
+      "texture": "none"
+    },
+    "stylistic_tone": "premium, clean outdoor lifestyle",
+    "icon_behavior": {
+      "branding_alignment": "neutral",
+      "scalability": "legible at small sizes"
+    }
+  }
+}
+```
+
+**Sauger**
+```json
+{
+  "icon_style": {
+    "perspective": "isometric",
+    "geometry": {
+      "proportions": "1:1 ratio canvas, floating centrally",
+      "element_arrangement": "Elongated fish similar to Walleye with dorsal spots"
+    },
+    "composition": {
+      "element_count": "1 main object",
+      "spatial_depth": "layered to create sense of dimension",
+      "scale_consistency": "uniform object scale",
+      "scene_density": "minimal, high clarity"
+    },
+    "lighting": {
+      "type": "soft ambient light",
+      "light_source": "subtle top-right",
+      "shadow": "gentle drop shadows below",
+      "highlighting": "mild edge illumination"
+    },
+    "textures": {
+      "material_finish": "semi-matte",
+      "surface_treatment": "stylized naturalism",
+      "texture_realism": "stylized"
+    },
+    "render_quality": {
+      "resolution": "high-resolution octane 3D rendering",
+      "edge_definition": "crisp, no outlines",
+      "visual_clarity": "clean, readable silhouette"
+    },
+    "color_palette": {
+      "tone": "naturalistic",
+      "range": "brassy, dark blotches, spotted dorsal fin",
+      "usage": "distinct colors to identify features"
+    },
+    "background": {
+      "color": "#FFFFFF",
+      "style": "pure white, flat",
+      "texture": "none"
+    },
+    "stylistic_tone": "premium, clean outdoor lifestyle",
+    "icon_behavior": {
+      "branding_alignment": "neutral",
+      "scalability": "legible at small sizes"
+    }
+  }
+}
+```
+
+**Striped Bass / Hybrid**
+```json
+{
+  "icon_style": {
+    "perspective": "isometric",
+    "geometry": {
+      "proportions": "1:1 ratio canvas, floating centrally",
+      "element_arrangement": "Streamlined bass with distinct horizontal stripes"
+    },
+    "composition": {
+      "element_count": "1 main object",
+      "spatial_depth": "layered to create sense of dimension",
+      "scale_consistency": "uniform object scale",
+      "scene_density": "minimal, high clarity"
+    },
+    "lighting": {
+      "type": "soft ambient light",
+      "light_source": "subtle top-right",
+      "shadow": "gentle drop shadows below",
+      "highlighting": "mild edge illumination"
+    },
+    "textures": {
+      "material_finish": "semi-matte",
+      "surface_treatment": "stylized naturalism",
+      "texture_realism": "stylized"
+    },
+    "render_quality": {
+      "resolution": "high-resolution octane 3D rendering",
+      "edge_definition": "crisp, no outlines",
+      "visual_clarity": "clean, readable silhouette"
+    },
+    "color_palette": {
+      "tone": "naturalistic",
+      "range": "silver, heavy black broken lines",
+      "usage": "distinct colors to identify features"
+    },
+    "background": {
+      "color": "#FFFFFF",
+      "style": "pure white, flat",
+      "texture": "none"
+    },
+    "stylistic_tone": "premium, clean outdoor lifestyle",
+    "icon_behavior": {
+      "branding_alignment": "neutral",
+      "scalability": "legible at small sizes"
+    }
+  }
+}
+```
+
+**Square Bill Crankbait**
+```json
+{
+  "icon_style": {
+    "perspective": "isometric",
+    "geometry": {
+      "proportions": "1:1 ratio canvas, floating centrally",
+      "element_arrangement": "Stout body crankbait with square diving lip"
+    },
+    "composition": {
+      "element_count": "1 main object",
+      "spatial_depth": "layered to create sense of dimension",
+      "scale_consistency": "uniform object scale",
+      "scene_density": "minimal, high clarity"
+    },
+    "lighting": {
+      "type": "soft ambient light",
+      "light_source": "subtle top-right",
+      "shadow": "gentle drop shadows below",
+      "highlighting": "mild edge illumination"
+    },
+    "textures": {
+      "material_finish": "satin to glossy",
+      "surface_treatment": "stylized naturalism",
+      "texture_realism": "stylized"
+    },
+    "render_quality": {
+      "resolution": "high-resolution octane 3D rendering",
+      "edge_definition": "crisp, no outlines",
+      "visual_clarity": "clean, readable silhouette"
+    },
+    "color_palette": {
+      "tone": "naturalistic",
+      "range": "chartreuse black back or craw pattern",
+      "usage": "distinct colors to identify features"
+    },
+    "background": {
+      "color": "#FFFFFF",
+      "style": "pure white, flat",
+      "texture": "none"
+    },
+    "stylistic_tone": "premium, clean outdoor lifestyle",
+    "icon_behavior": {
+      "branding_alignment": "neutral",
+      "scalability": "legible at small sizes"
+    }
+  }
+}
+```
+
+**Flicker Shad**
+```json
+{
+  "icon_style": {
+    "perspective": "isometric",
+    "geometry": {
+      "proportions": "1:1 ratio canvas, floating centrally",
+      "element_arrangement": "Slender minnow-profile crankbait"
+    },
+    "composition": {
+      "element_count": "1 main object",
+      "spatial_depth": "layered to create sense of dimension",
+      "scale_consistency": "uniform object scale",
+      "scene_density": "minimal, high clarity"
+    },
+    "lighting": {
+      "type": "soft ambient light",
+      "light_source": "subtle top-right",
+      "shadow": "gentle drop shadows below",
+      "highlighting": "mild edge illumination"
+    },
+    "textures": {
+      "material_finish": "satin to glossy",
+      "surface_treatment": "stylized naturalism",
+      "texture_realism": "stylized"
+    },
+    "render_quality": {
+      "resolution": "high-resolution octane 3D rendering",
+      "edge_definition": "crisp, no outlines",
+      "visual_clarity": "clean, readable silhouette"
+    },
+    "color_palette": {
+      "tone": "naturalistic",
+      "range": "shad pattern or firetiger",
+      "usage": "distinct colors to identify features"
+    },
+    "background": {
+      "color": "#FFFFFF",
+      "style": "pure white, flat",
+      "texture": "none"
+    },
+    "stylistic_tone": "premium, clean outdoor lifestyle",
+    "icon_behavior": {
+      "branding_alignment": "neutral",
+      "scalability": "legible at small sizes"
+    }
+  }
+}
+```
+
+**Hair Jig**
+```json
+{
+  "icon_style": {
+    "perspective": "isometric",
+    "geometry": {
+      "proportions": "1:1 ratio canvas, floating centrally",
+      "element_arrangement": "Simple jig head with tied bucktail or marabou hair"
+    },
+    "composition": {
+      "element_count": "1 main object",
+      "spatial_depth": "layered to create sense of dimension",
+      "scale_consistency": "uniform object scale",
+      "scene_density": "minimal, high clarity"
+    },
+    "lighting": {
+      "type": "soft ambient light",
+      "light_source": "subtle top-right",
+      "shadow": "gentle drop shadows below",
+      "highlighting": "mild edge illumination"
+    },
+    "textures": {
+      "material_finish": "satin to glossy",
+      "surface_treatment": "stylized naturalism",
+      "texture_realism": "stylized"
+    },
+    "render_quality": {
+      "resolution": "high-resolution octane 3D rendering",
+      "edge_definition": "crisp, no outlines",
+      "visual_clarity": "clean, readable silhouette"
+    },
+    "color_palette": {
+      "tone": "naturalistic",
+      "range": "gray, white, red thread",
+      "usage": "distinct colors to identify features"
+    },
+    "background": {
+      "color": "#FFFFFF",
+      "style": "pure white, flat",
+      "texture": "none"
+    },
+    "stylistic_tone": "premium, clean outdoor lifestyle",
+    "icon_behavior": {
+      "branding_alignment": "neutral",
+      "scalability": "legible at small sizes"
+    }
+  }
+}
+```
+
+**Nightcrawler (Live Bait)**
+```json
+{
+  "icon_style": {
+    "perspective": "isometric",
+    "geometry": {
+      "proportions": "1:1 ratio canvas, floating centrally",
+      "element_arrangement": "Natural earthworm, long and segmented"
+    },
+    "composition": {
+      "element_count": "1 main object",
+      "spatial_depth": "layered to create sense of dimension",
+      "scale_consistency": "uniform object scale",
+      "scene_density": "minimal, high clarity"
+    },
+    "lighting": {
+      "type": "soft ambient light",
+      "light_source": "subtle top-right",
+      "shadow": "gentle drop shadows below",
+      "highlighting": "mild edge illumination"
+    },
+    "textures": {
+      "material_finish": "satin to glossy",
+      "surface_treatment": "stylized naturalism",
+      "texture_realism": "stylized"
+    },
+    "render_quality": {
+      "resolution": "high-resolution octane 3D rendering",
+      "edge_definition": "crisp, no outlines",
+      "visual_clarity": "clean, readable silhouette"
+    },
+    "color_palette": {
+      "tone": "naturalistic",
+      "range": "pink, brown, natural earth tones",
+      "usage": "distinct colors to identify features"
+    },
+    "background": {
+      "color": "#FFFFFF",
+      "style": "pure white, flat",
+      "texture": "none"
+    },
+    "stylistic_tone": "premium, clean outdoor lifestyle",
+    "icon_behavior": {
+      "branding_alignment": "neutral",
+      "scalability": "legible at small sizes"
+    }
+  }
+}
+```
+
+**Jig and Pig (Craw Trailer)**
+```json
+{
+  "icon_style": {
+    "perspective": "isometric",
+    "geometry": {
+      "proportions": "1:1 ratio canvas, floating centrally",
+      "element_arrangement": "Jig with bulky pork or plastic crawfish trailer"
+    },
+    "composition": {
+      "element_count": "1 main object",
+      "spatial_depth": "layered to create sense of dimension",
+      "scale_consistency": "uniform object scale",
+      "scene_density": "minimal, high clarity"
+    },
+    "lighting": {
+      "type": "soft ambient light",
+      "light_source": "subtle top-right",
+      "shadow": "gentle drop shadows below",
+      "highlighting": "mild edge illumination"
+    },
+    "textures": {
+      "material_finish": "satin to glossy",
+      "surface_treatment": "stylized naturalism",
+      "texture_realism": "stylized"
+    },
+    "render_quality": {
+      "resolution": "high-resolution octane 3D rendering",
+      "edge_definition": "crisp, no outlines",
+      "visual_clarity": "clean, readable silhouette"
+    },
+    "color_palette": {
+      "tone": "naturalistic",
+      "range": "black/blue or green pumpkin",
+      "usage": "distinct colors to identify features"
+    },
+    "background": {
+      "color": "#FFFFFF",
+      "style": "pure white, flat",
+      "texture": "none"
+    },
+    "stylistic_tone": "premium, clean outdoor lifestyle",
+    "icon_behavior": {
+      "branding_alignment": "neutral",
+      "scalability": "legible at small sizes"
+    }
+  }
+}
+```
+
+**Spinnerbait**
+```json
+{
+  "icon_style": {
+    "perspective": "isometric",
+    "geometry": {
+      "proportions": "1:1 ratio canvas, floating centrally",
+      "element_arrangement": "Safety-pin style wire frame with blades and skirt"
+    },
+    "composition": {
+      "element_count": "1 main object",
+      "spatial_depth": "layered to create sense of dimension",
+      "scale_consistency": "uniform object scale",
+      "scene_density": "minimal, high clarity"
+    },
+    "lighting": {
+      "type": "soft ambient light",
+      "light_source": "subtle top-right",
+      "shadow": "gentle drop shadows below",
+      "highlighting": "mild edge illumination"
+    },
+    "textures": {
+      "material_finish": "satin to glossy",
+      "surface_treatment": "stylized naturalism",
+      "texture_realism": "stylized"
+    },
+    "render_quality": {
+      "resolution": "high-resolution octane 3D rendering",
+      "edge_definition": "crisp, no outlines",
+      "visual_clarity": "clean, readable silhouette"
+    },
+    "color_palette": {
+      "tone": "naturalistic",
+      "range": "white/chartreuse skirt, silver/gold blades",
+      "usage": "distinct colors to identify features"
+    },
+    "background": {
+      "color": "#FFFFFF",
+      "style": "pure white, flat",
+      "texture": "none"
+    },
+    "stylistic_tone": "premium, clean outdoor lifestyle",
+    "icon_behavior": {
+      "branding_alignment": "neutral",
+      "scalability": "legible at small sizes"
+    }
+  }
+}
+```
+
+
