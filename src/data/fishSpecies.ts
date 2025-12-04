@@ -65,3 +65,49 @@ export const allFishSpecies = [
 export function isFishSpecies(species: string): species is FishSpecies {
   return allFishSpecies.includes(species as FishSpecies);
 }
+
+// Category labels for display
+export const categoryLabels: Record<string, string> = {
+  gameFish: 'Game Fish',
+  panfish: 'Panfish',
+  catfish: 'Catfish',
+  roughFish: 'Rough Fish',
+};
+
+// Get category for a species
+export function getSpeciesCategory(species: string): string | null {
+  const speciesLower = species.toLowerCase().trim();
+
+  for (const [category, speciesList] of Object.entries(fishSpecies)) {
+    if (speciesList.some(s => s.toLowerCase() === speciesLower)) {
+      return category;
+    }
+  }
+  return null;
+}
+
+// Group species list by category
+export function groupSpeciesByCategory(speciesString: string): Record<string, string[]> {
+  const result: Record<string, string[]> = {
+    gameFish: [],
+    panfish: [],
+    catfish: [],
+    roughFish: [],
+    other: [],
+  };
+
+  if (!speciesString) return result;
+
+  const speciesList = speciesString.split(',').map(s => s.trim()).filter(Boolean);
+
+  for (const species of speciesList) {
+    const category = getSpeciesCategory(species);
+    if (category && category in result) {
+      result[category].push(species);
+    } else {
+      result.other.push(species);
+    }
+  }
+
+  return result;
+}

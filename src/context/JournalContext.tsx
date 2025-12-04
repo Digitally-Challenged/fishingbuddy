@@ -3,6 +3,9 @@ import { FormData } from '../types';
 import { sampleEntries } from '../data/sampleData';
 import { storageUtils } from '../utils/storage';
 
+// Increment this when sample data changes to force a refresh
+const SAMPLE_DATA_VERSION = 3;
+
 interface JournalState {
   entries: FormData[];
   error: string | null;
@@ -143,19 +146,30 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'TOGGLE_DARK_MODE' });
   };
 
-  // Load entries from localStorage on mount
+  // Load entries from localStorage on mount, with version check
   useEffect(() => {
     try {
+      const storedVersion = localStorage.getItem('sampleDataVersion');
+      const currentVersion = SAMPLE_DATA_VERSION.toString();
+
+      // If version changed or no version stored, reload sample data
+      if (storedVersion !== currentVersion) {
+        localStorage.setItem('sampleDataVersion', currentVersion);
+        storageUtils.saveEntries(sampleEntries);
+        dispatch({ type: 'LOAD_ENTRIES', payload: sampleEntries });
+        return;
+      }
+
       const entries = storageUtils.loadEntries();
-      if (entries.length === 0 && state.entries.length === 0) {
+      if (entries.length === 0) {
         dispatch({ type: 'LOAD_ENTRIES', payload: sampleEntries });
       } else {
         dispatch({ type: 'LOAD_ENTRIES', payload: entries });
       }
     } catch (error) {
-      dispatch({ 
-        type: 'SET_ERROR', 
-        payload: error instanceof Error ? error.message : 'Failed to load entries' 
+      dispatch({
+        type: 'SET_ERROR',
+        payload: error instanceof Error ? error.message : 'Failed to load entries'
       });
     }
   }, []);

@@ -30,6 +30,7 @@ import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, W
 import { FormData } from '../../types';
 import { useJournal } from '../../context/JournalContext';
 import JournalEntryCard from './JournalEntryCard';
+import { groupSpeciesByCategory, categoryLabels } from '../../data/fishSpecies';
 import dayjs from 'dayjs';
 
 export default function JournalEntryList() {
@@ -338,9 +339,31 @@ export default function JournalEntryList() {
                     <Typography variant="h4" color="primary" gutterBottom>
                       {selectedEntry.numberCaught || 0} fish
                     </Typography>
-                    <Typography variant="body1">{selectedEntry.fishSpecies || 'No species recorded'}</Typography>
+                    {selectedEntry.fishSpecies ? (
+                      <Stack spacing={1}>
+                        {(() => {
+                          const grouped = groupSpeciesByCategory(selectedEntry.fishSpecies || '');
+                          return Object.entries(grouped).map(([category, species]) => {
+                            if (species.length === 0) return null;
+                            const label = categoryLabels[category] || 'Other';
+                            return (
+                              <Box key={category}>
+                                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+                                  {label}:
+                                </Typography>
+                                <Typography variant="body1" sx={{ pl: 1 }}>
+                                  {species.join(', ')}
+                                </Typography>
+                              </Box>
+                            );
+                          });
+                        })()}
+                      </Stack>
+                    ) : (
+                      <Typography variant="body1">No species recorded</Typography>
+                    )}
                     {selectedEntry.baitUsed && (
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
                         <strong>Bait:</strong> {selectedEntry.baitUsed}
                       </Typography>
                     )}
