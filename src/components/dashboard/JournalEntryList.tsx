@@ -33,6 +33,37 @@ import JournalEntryCard from './JournalEntryCard';
 import { groupSpeciesByCategory, categoryLabels } from '../../data/fishSpecies';
 import dayjs from 'dayjs';
 
+// Format notes into readable paragraphs
+function formatNotes(notes: string): string[] {
+  if (!notes) return [];
+
+  // Split on common topic boundaries
+  const paragraphs: string[] = [];
+  let current = '';
+
+  // Split into sentences
+  const sentences = notes.split(/(?<=[.!?])\s+/);
+
+  for (const sentence of sentences) {
+    // Start new paragraph on topic shifts
+    const isNewTopic =
+      /^(Also|Mr\.|Weather|Traffic|Two-day|Trip total|Saw \d|Great stream|Falling leaves|Walleyes caught|I caught|We caught|That evening|That night|The next|Overall|In total)/i.test(sentence);
+
+    if (isNewTopic && current) {
+      paragraphs.push(current.trim());
+      current = sentence;
+    } else {
+      current += (current ? ' ' : '') + sentence;
+    }
+  }
+
+  if (current) {
+    paragraphs.push(current.trim());
+  }
+
+  return paragraphs;
+}
+
 export default function JournalEntryList() {
   const { state, dispatch } = useJournal();
   const [viewMode] = useState<'grid' | 'list'>('list');
@@ -472,9 +503,13 @@ export default function JournalEntryList() {
                         <FileText size={20} />
                         <Typography variant="subtitle1" fontWeight="bold">Notes</Typography>
                       </Box>
-                      <Typography variant="body2" sx={{ pl: 3.5, whiteSpace: 'pre-wrap' }}>
-                        {selectedEntry.notes}
-                      </Typography>
+                      <Stack spacing={1.5} sx={{ pl: 3.5 }}>
+                        {formatNotes(selectedEntry.notes).map((paragraph, idx) => (
+                          <Typography key={idx} variant="body2" sx={{ lineHeight: 1.6 }}>
+                            {paragraph}
+                          </Typography>
+                        ))}
+                      </Stack>
                     </Grid>
                   </>
                 )}

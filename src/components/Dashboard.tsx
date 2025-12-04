@@ -21,7 +21,7 @@ export default function Dashboard() {
               alignItems: 'flex-end',
               justifyContent: 'center',
               textAlign: 'center',
-              backgroundImage: 'url(/hero.jpg)',
+              backgroundImage: 'url(/hero.jpeg)',
               backgroundSize: 'cover',
               backgroundPosition: 'center top', // Focus on top to crop out bottom text
               color: 'white',
