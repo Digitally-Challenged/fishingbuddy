@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, Typography, Link, Divider } from '@mui/material';
+import { Box, Container, Typography, Link } from '@mui/material';
 import { Fish, Github } from 'lucide-react';
 
 export default function Footer() {
@@ -16,7 +16,6 @@ export default function Footer() {
       }}
     >
       <Container maxWidth="lg">
-        <Divider sx={{ mb: 3 }} />
         <Box
           sx={{
             display: 'flex',
