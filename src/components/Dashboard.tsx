@@ -16,7 +16,7 @@ export default function Dashboard() {
               p: 4,
               borderRadius: 4,
               overflow: 'hidden',
-              minHeight: 300,
+              minHeight: { xs: 280, sm: 350, md: 420, lg: 480 },
               display: 'flex',
               alignItems: 'flex-end',
               justifyContent: 'center',
