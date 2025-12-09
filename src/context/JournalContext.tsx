@@ -4,7 +4,7 @@ import { sampleEntries } from '../data/sampleData';
 import { storageUtils } from '../utils/storage';
 
 // Increment this when sample data changes to force a refresh
-const SAMPLE_DATA_VERSION = 3;
+const SAMPLE_DATA_VERSION = 4;
 
 interface JournalState {
   entries: FormData[];
@@ -24,7 +24,7 @@ type JournalAction =
 const initialState: JournalState = {
   entries: storageUtils.loadEntries(),
   error: null,
-  darkMode: storageUtils.loadDarkMode() ?? window.matchMedia('(prefers-color-scheme: dark)').matches,
+  darkMode: storageUtils.loadDarkMode() ?? true,
 };
 
 const JournalContext = createContext<{
