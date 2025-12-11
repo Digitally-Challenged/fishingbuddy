@@ -24,14 +24,137 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Divider
+  Divider,
+  useTheme
 } from '@mui/material';
-import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, Thermometer, Gauge, Moon, CloudRain, ArrowUpDown } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, Thermometer, Gauge, Moon, CloudRain, ArrowUpDown, Users, Navigation } from 'lucide-react';
 import { FormData } from '../../types';
 import { useJournal } from '../../context/JournalContext';
-import JournalEntryCard from './JournalEntryCard';
 import { groupSpeciesByCategory, categoryLabels } from '../../data/fishSpecies';
+import { FishIcon } from '../FishIcon';
+import { LureIcon } from '../LureIcon';
 import dayjs from 'dayjs';
+
+// Create motion components for table elements
+const MotionTableRow = motion.create('tr');
+const MotionBox = motion.create(Box);
+
+// Water caustics background effect
+function WaterCausticsBackground({ isDark }: { isDark: boolean }) {
+  const prefersReducedMotion = useReducedMotion();
+
+  return (
+    <Box
+      sx={{
+        position: 'absolute',
+        inset: 0,
+        overflow: 'hidden',
+        borderRadius: 2,
+        pointerEvents: 'none',
+        zIndex: 0,
+      }}
+    >
+      {/* SVG filter for caustics effect */}
+      <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+        <defs>
+          <filter id="water-caustics" x="0%" y="0%" width="100%" height="100%">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.01 0.02"
+              numOctaves="3"
+              seed="5"
+              result="noise"
+            >
+              {!prefersReducedMotion && (
+                <animate
+                  attributeName="baseFrequency"
+                  dur="60s"
+                  values="0.01 0.02;0.015 0.025;0.01 0.02"
+                  repeatCount="indefinite"
+                />
+              )}
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" />
+          </filter>
+        </defs>
+      </svg>
+
+      {/* Animated gradient layers */}
+      <Box
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          opacity: isDark ? 0.15 : 0.20,
+          background: isDark
+            ? 'radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.4) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(37, 99, 235, 0.3) 0%, transparent 50%)'
+            : 'radial-gradient(ellipse at 30% 20%, rgba(56, 189, 248, 0.5) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(34, 211, 238, 0.4) 0%, transparent 50%)',
+          backgroundSize: '200% 200%',
+          animation: prefersReducedMotion ? 'none' : 'causticsMove 60s ease-in-out infinite',
+          '@keyframes causticsMove': {
+            '0%': { backgroundPosition: '0% 0%' },
+            '50%': { backgroundPosition: '100% 100%' },
+            '100%': { backgroundPosition: '0% 0%' },
+          },
+        }}
+      />
+
+      {/* Subtle light ripples */}
+      <Box
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          opacity: isDark ? 0.08 : 0.12,
+          background: 'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.03) 35px, rgba(255,255,255,0.03) 70px)',
+          animation: prefersReducedMotion ? 'none' : 'rippleShift 45s linear infinite',
+          '@keyframes rippleShift': {
+            '0%': { transform: 'translateX(0)' },
+            '100%': { transform: 'translateX(70px)' },
+          },
+        }}
+      />
+    </Box>
+  );
+}
+
+// Row animation variants
+const rowVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.05,
+      duration: 0.3,
+      ease: 'easeOut',
+    },
+  }),
+  exit: {
+    opacity: 0,
+    y: -10,
+    transition: { duration: 0.2 },
+  },
+};
+
+// Modal content animation variants
+const modalContentVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const modalItemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3 },
+  },
+};
 
 // Format notes into readable paragraphs
 function formatNotes(notes: string): string[] {
@@ -66,11 +189,14 @@ function formatNotes(notes: string): string[] {
 
 export default function JournalEntryList() {
   const { state, dispatch } = useJournal();
+  const theme = useTheme();
+  const prefersReducedMotion = useReducedMotion();
   const [viewMode] = useState<'grid' | 'list'>('list');
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEntry, setSelectedEntry] = useState<FormData | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const isDark = theme.palette.mode === 'dark';
 
   const entriesPerPage = 9;
 
@@ -173,9 +299,11 @@ export default function JournalEntryList() {
         </Box>
       ) : (
         <>
-            <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+          <Box sx={{ position: 'relative' }}>
+            <WaterCausticsBackground isDark={isDark} />
+            <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, position: 'relative', bgcolor: 'transparent' }}>
               <Table sx={{ minWidth: 1000 }} aria-label="journal entries table">
-                <TableHead sx={{ bgcolor: 'action.hover' }}>
+                <TableHead sx={{ bgcolor: isDark ? 'rgba(30, 41, 59, 0.8)' : 'rgba(241, 245, 249, 0.9)' }}>
                   <TableRow>
                     <TableCell onClick={handleSortToggle} sx={{ cursor: 'pointer', userSelect: 'none' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -192,17 +320,28 @@ export default function JournalEntryList() {
                     <TableCell align="right">Actions</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
+                <TableBody component={motion.tbody} initial="hidden" animate="visible">
+                  <AnimatePresence mode="popLayout">
                   {currentEntries.map((entry, index) => {
                     const originalIndex = state.entries.indexOf(entry);
                     return (
-                      <TableRow
-                        key={`${entry.date}-${index}`}
+                      <MotionTableRow
+                        key={`${entry.date}-${entry.streamName}-${originalIndex}`}
                         onClick={() => setSelectedEntry(entry)}
-                        sx={{
-                          '&:last-child td, &:last-child th': { border: 0 },
+                        custom={index}
+                        variants={prefersReducedMotion ? {} : rowVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        whileHover={prefersReducedMotion ? {} : {
+                          y: -4,
+                          scale: 1.01,
+                          boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
+                          transition: { duration: 0.2 }
+                        }}
+                        style={{
                           cursor: 'pointer',
-                          '&:hover': { bgcolor: 'action.hover' }
+                          backgroundColor: isDark ? 'rgba(30, 41, 59, 0.6)' : 'rgba(255, 255, 255, 0.8)',
                         }}
                       >
                         <TableCell component="th" scope="row">
@@ -270,7 +409,11 @@ export default function JournalEntryList() {
                            {entry.fishSpecies && (
                              <Stack spacing={0.5}>
                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                 <Fish size={16} className="text-emerald-500" />
+                                 <FishIcon
+                                   species={entry.fishSpecies}
+                                   size="sm"
+                                   fallback={<Fish size={16} className="text-emerald-500" />}
+                                 />
                                  <Typography variant="body2" fontWeight={500}>
                                    {entry.numberCaught} {entry.fishSpecies}
                                  </Typography>
@@ -282,7 +425,11 @@ export default function JournalEntryList() {
                         <TableCell>
                           {entry.baitUsed && (
                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                               <Anchor size={16} className="text-slate-400" />
+                               <LureIcon
+                                 bait={entry.baitUsed}
+                                 size="sm"
+                                 fallback={<Anchor size={16} className="text-slate-400" />}
+                               />
                                <Typography variant="body2">
                                  {entry.baitUsed}
                                </Typography>
@@ -310,18 +457,20 @@ export default function JournalEntryList() {
 
                         <TableCell align="right">
                           <Tooltip title="Delete">
-                            <IconButton onClick={() => handleDelete(originalIndex)} color="error" size="small">
+                            <IconButton onClick={(e) => { e.stopPropagation(); handleDelete(originalIndex); }} color="error" size="small">
                               <Trash2 size={18} />
                             </IconButton>
                           </Tooltip>
                         </TableCell>
-                      </TableRow>
+                      </MotionTableRow>
                     );
                   })}
+                  </AnimatePresence>
                 </TableBody>
               </Table>
             </TableContainer>
-          
+          </Box>
+
           {pageCount > 1 && (
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
               <Pagination
@@ -341,6 +490,17 @@ export default function JournalEntryList() {
         onClose={() => setSelectedEntry(null)}
         maxWidth="md"
         fullWidth
+        TransitionProps={{
+          timeout: { enter: 200, exit: 150 },
+        }}
+        PaperProps={{
+          component: motion.div,
+          initial: prefersReducedMotion ? {} : { opacity: 0, scale: 0.95 },
+          animate: { opacity: 1, scale: 1 },
+          exit: prefersReducedMotion ? {} : { opacity: 0 },
+          transition: { duration: 0.2 },
+          sx: { backdropFilter: 'blur(4px)' }
+        } as object}
       >
         {selectedEntry && (
           <>
@@ -349,6 +509,12 @@ export default function JournalEntryList() {
                 <MapPin size={24} />
                 <Box>
                   <Typography variant="h6">{selectedEntry.streamName}</Typography>
+                  {selectedEntry.riverStretch && (
+                    <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <Navigation size={14} />
+                      {selectedEntry.riverStretch}
+                    </Typography>
+                  )}
                   <Typography variant="body2" color="text.secondary">
                     {dayjs(selectedEntry.date).format('MMMM D, YYYY')}
                   </Typography>
@@ -359,11 +525,33 @@ export default function JournalEntryList() {
               </IconButton>
             </DialogTitle>
             <DialogContent dividers>
+              <MotionBox
+                variants={prefersReducedMotion ? {} : modalContentVariants}
+                initial="hidden"
+                animate="visible"
+              >
               <Grid container spacing={3}>
+                {/* Trip Members */}
+                {selectedEntry.tripMembers && (
+                  <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                      <Users size={20} />
+                      <Typography variant="subtitle1" fontWeight="bold">Fishing Party</Typography>
+                    </Box>
+                    <Typography variant="body2" sx={{ pl: 3.5 }}>
+                      {selectedEntry.tripMembers}
+                    </Typography>
+                  </Grid>
+                )}
+
                 {/* Catch Details */}
-                <Grid item xs={12}>
+                <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                    <Fish size={20} className="text-emerald-500" />
+                    <FishIcon
+                      species={selectedEntry.fishSpecies || ''}
+                      size="md"
+                      fallback={<Fish size={20} className="text-emerald-500" />}
+                    />
                     <Typography variant="subtitle1" fontWeight="bold">Catch Details</Typography>
                   </Box>
                   <Box sx={{ pl: 3.5 }}>
@@ -374,17 +562,22 @@ export default function JournalEntryList() {
                       <Stack spacing={1}>
                         {(() => {
                           const grouped = groupSpeciesByCategory(selectedEntry.fishSpecies || '');
-                          return Object.entries(grouped).map(([category, species]) => {
-                            if (species.length === 0) return null;
+                          return Object.entries(grouped).map(([category, speciesList]) => {
+                            if (speciesList.length === 0) return null;
                             const label = categoryLabels[category] || 'Other';
                             return (
                               <Box key={category}>
                                 <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
                                   {label}:
                                 </Typography>
-                                <Typography variant="body1" sx={{ pl: 1 }}>
-                                  {species.join(', ')}
-                                </Typography>
+                                <Stack spacing={0.5} sx={{ pl: 1, mt: 0.5 }}>
+                                  {speciesList.map((species) => (
+                                    <Box key={species} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                      <FishIcon species={species} size="sm" />
+                                      <Typography variant="body1">{species}</Typography>
+                                    </Box>
+                                  ))}
+                                </Stack>
                               </Box>
                             );
                           });
@@ -394,9 +587,23 @@ export default function JournalEntryList() {
                       <Typography variant="body1">No species recorded</Typography>
                     )}
                     {selectedEntry.baitUsed && (
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                        <strong>Bait:</strong> {selectedEntry.baitUsed}
-                      </Typography>
+                      <Box sx={{ mt: 2 }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
+                          Bait Used:
+                        </Typography>
+                        <Stack spacing={0.5} sx={{ pl: 1 }}>
+                          {selectedEntry.baitUsed.split(',').map((bait, idx) => (
+                            <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <LureIcon
+                                bait={bait.trim()}
+                                size="sm"
+                                fallback={<Anchor size={16} className="text-slate-400" />}
+                              />
+                              <Typography variant="body1">{bait.trim()}</Typography>
+                            </Box>
+                          ))}
+                        </Stack>
+                      </Box>
                     )}
                   </Box>
                 </Grid>
@@ -404,7 +611,7 @@ export default function JournalEntryList() {
                 <Grid item xs={12}><Divider /></Grid>
 
                 {/* Weather Conditions */}
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                     <Wind size={20} />
                     <Typography variant="subtitle1" fontWeight="bold">Weather</Typography>
@@ -455,7 +662,7 @@ export default function JournalEntryList() {
                 </Grid>
 
                 {/* Water Conditions */}
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                     <Droplets size={20} />
                     <Typography variant="subtitle1" fontWeight="bold">Water Conditions</Typography>
@@ -498,7 +705,7 @@ export default function JournalEntryList() {
                 {selectedEntry.notes && (
                   <>
                     <Grid item xs={12}><Divider /></Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                         <FileText size={20} />
                         <Typography variant="subtitle1" fontWeight="bold">Notes</Typography>
@@ -514,6 +721,7 @@ export default function JournalEntryList() {
                   </>
                 )}
               </Grid>
+              </MotionBox>
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setSelectedEntry(null)}>Close</Button>
