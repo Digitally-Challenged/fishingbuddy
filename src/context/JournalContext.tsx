@@ -14,6 +14,7 @@ interface JournalState {
 
 type JournalAction =
   | { type: 'ADD_ENTRY'; payload: FormData }
+  | { type: 'UPDATE_ENTRY'; payload: { index: number; entry: FormData } }
   | { type: 'DELETE_ENTRY'; payload: number }
   | { type: 'LOAD_ENTRIES'; payload: FormData[] }
   | { type: 'IMPORT_ENTRIES'; payload: FormData[] }
@@ -45,6 +46,15 @@ function journalReducer(state: JournalState, action: JournalAction): JournalStat
         newState = {
           ...state,
           entries: [...state.entries, action.payload],
+          error: null,
+        };
+        break;
+      case 'UPDATE_ENTRY':
+        const updatedEntries = [...state.entries];
+        updatedEntries[action.payload.index] = action.payload.entry;
+        newState = {
+          ...state,
+          entries: updatedEntries,
           error: null,
         };
         break;

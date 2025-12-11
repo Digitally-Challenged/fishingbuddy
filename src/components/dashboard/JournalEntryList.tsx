@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -25,15 +25,21 @@ import {
   DialogActions,
   Button,
   Divider,
-  useTheme
+  useTheme,
+  Collapse,
+  Autocomplete,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, Thermometer, Gauge, Moon, CloudRain, ArrowUpDown, Users, Navigation } from 'lucide-react';
+import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, Thermometer, Gauge, Moon, CloudRain, ArrowUpDown, Users, Navigation, ChevronDown, Edit2, Save } from 'lucide-react';
 import { FormData } from '../../types';
 import { useJournal } from '../../context/JournalContext';
 import { groupSpeciesByCategory, categoryLabels } from '../../data/fishSpecies';
 import { FishIcon } from '../FishIcon';
 import { LureIcon } from '../LureIcon';
+import { useFormValidation } from '../../hooks/useFormValidation';
+import { allArkansasStreams } from '../../data/arkansasStreams';
 import dayjs from 'dayjs';
 
 // Create motion components for table elements
@@ -195,8 +201,92 @@ export default function JournalEntryList() {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEntry, setSelectedEntry] = useState<FormData | null>(null);
+  const [selectedEntryIndex, setSelectedEntryIndex] = useState<number | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState<FormData | null>(null);
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
   const isDark = theme.palette.mode === 'dark';
+
+  // Validation for edit form
+  const validationRules = useMemo(() => ({
+    date: {
+      required: true,
+      requiredMessage: 'Date is required',
+      validate: (value: unknown) => {
+        if (value && dayjs(value as string).isAfter(dayjs())) {
+          return 'Date cannot be in the future';
+        }
+        return null;
+      }
+    },
+    streamName: {
+      required: true,
+      requiredMessage: 'Stream name is required'
+    }
+  }), []);
+
+  const { errors, validate, validateField, clearError } = useFormValidation(validationRules);
+
+  const toggleRowExpansion = (rowKey: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedRows(prev => {
+      const next = new Set(prev);
+      if (next.has(rowKey)) {
+        next.delete(rowKey);
+      } else {
+        next.add(rowKey);
+      }
+      return next;
+    });
+  };
+
+  const handleOpenEntry = (entry: FormData, index: number) => {
+    setSelectedEntry(entry);
+    setSelectedEntryIndex(index);
+    setIsEditing(false);
+    setEditFormData(null);
+  };
+
+  const handleStartEdit = () => {
+    if (selectedEntry) {
+      setEditFormData({ ...selectedEntry });
+      setIsEditing(true);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditFormData(null);
+  };
+
+  const handleSaveEdit = () => {
+    if (!editFormData || selectedEntryIndex === null) return;
+
+    const isValid = validate(editFormData as unknown as Record<string, unknown>);
+    if (!isValid) return;
+
+    dispatch({
+      type: 'UPDATE_ENTRY',
+      payload: { index: selectedEntryIndex, entry: editFormData }
+    });
+
+    setSelectedEntry(editFormData);
+    setIsEditing(false);
+    setEditFormData(null);
+    setSnackbar({ open: true, message: 'Entry updated successfully', severity: 'success' });
+  };
+
+  const handleEditFieldChange = (field: keyof FormData, value: string | number) => {
+    if (!editFormData) return;
+    setEditFormData({ ...editFormData, [field]: value });
+    clearError(field);
+  };
 
   const entriesPerPage = 9;
 
@@ -305,6 +395,7 @@ export default function JournalEntryList() {
               <Table sx={{ minWidth: 1000 }} aria-label="journal entries table">
                 <TableHead sx={{ bgcolor: isDark ? 'rgba(30, 41, 59, 0.8)' : 'rgba(241, 245, 249, 0.9)' }}>
                   <TableRow>
+                    <TableCell sx={{ width: 40, p: 1 }}></TableCell>
                     <TableCell onClick={handleSortToggle} sx={{ cursor: 'pointer', userSelect: 'none' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         Date
@@ -324,10 +415,16 @@ export default function JournalEntryList() {
                   <AnimatePresence mode="popLayout">
                   {currentEntries.map((entry, index) => {
                     const originalIndex = state.entries.indexOf(entry);
+                    const rowKey = `${entry.date}-${entry.streamName}-${originalIndex}`;
+                    const isExpanded = expandedRows.has(rowKey);
+                    const hasMultipleSpecies = entry.fishSpecies && entry.fishSpecies.includes(',');
+                    const hasMultipleBaits = entry.baitUsed && entry.baitUsed.includes(',');
+                    const canExpand = hasMultipleSpecies || hasMultipleBaits;
+
                     return (
+                      <React.Fragment key={rowKey}>
                       <MotionTableRow
-                        key={`${entry.date}-${entry.streamName}-${originalIndex}`}
-                        onClick={() => setSelectedEntry(entry)}
+                        onClick={() => handleOpenEntry(entry, originalIndex)}
                         custom={index}
                         variants={prefersReducedMotion ? {} : rowVariants}
                         initial="hidden"
@@ -344,6 +441,20 @@ export default function JournalEntryList() {
                           backgroundColor: isDark ? 'rgba(30, 41, 59, 0.6)' : 'rgba(255, 255, 255, 0.8)',
                         }}
                       >
+                        <TableCell sx={{ p: 1, width: 40 }}>
+                          {canExpand && (
+                            <IconButton
+                              size="small"
+                              onClick={(e) => toggleRowExpansion(rowKey, e)}
+                              sx={{
+                                transition: 'transform 0.2s',
+                                transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'
+                              }}
+                            >
+                              <ChevronDown size={18} />
+                            </IconButton>
+                          )}
+                        </TableCell>
                         <TableCell component="th" scope="row">
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, whiteSpace: 'nowrap' }}>
                             <Calendar size={16} className="text-slate-400" />
@@ -463,6 +574,78 @@ export default function JournalEntryList() {
                           </Tooltip>
                         </TableCell>
                       </MotionTableRow>
+
+                      {/* Expandable row for fish and lures */}
+                      {canExpand && (
+                        <TableRow>
+                          <TableCell
+                            colSpan={9}
+                            sx={{
+                              py: 0,
+                              borderBottom: isExpanded ? '1px solid' : 'none',
+                              borderColor: 'divider',
+                              bgcolor: isDark ? 'rgba(30, 41, 59, 0.3)' : 'rgba(241, 245, 249, 0.5)',
+                            }}
+                          >
+                            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                              <Box sx={{ py: 2, px: 3 }}>
+                                <Grid container spacing={4}>
+                                  {/* All Fish Species */}
+                                  {hasMultipleSpecies && (
+                                    <Grid item xs={12} md={6}>
+                                      <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Fish size={18} className="text-emerald-500" />
+                                        All Species Caught ({entry.numberCaught} total)
+                                      </Typography>
+                                      <Stack direction="row" flexWrap="wrap" gap={1}>
+                                        {entry.fishSpecies?.split(',').map((species, idx) => (
+                                          <Chip
+                                            key={idx}
+                                            icon={<FishIcon species={species.trim()} size="sm" />}
+                                            label={species.trim()}
+                                            size="small"
+                                            variant="outlined"
+                                            sx={{
+                                              borderColor: isDark ? 'rgba(52, 211, 153, 0.3)' : 'rgba(16, 185, 129, 0.3)',
+                                              '& .MuiChip-icon': { ml: 0.5 }
+                                            }}
+                                          />
+                                        ))}
+                                      </Stack>
+                                    </Grid>
+                                  )}
+
+                                  {/* All Baits/Lures */}
+                                  {hasMultipleBaits && (
+                                    <Grid item xs={12} md={6}>
+                                      <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Anchor size={18} className="text-slate-400" />
+                                        All Baits Used
+                                      </Typography>
+                                      <Stack direction="row" flexWrap="wrap" gap={1}>
+                                        {entry.baitUsed?.split(',').map((bait, idx) => (
+                                          <Chip
+                                            key={idx}
+                                            icon={<LureIcon bait={bait.trim()} size="sm" fallback={<Anchor size={14} />} />}
+                                            label={bait.trim()}
+                                            size="small"
+                                            variant="outlined"
+                                            sx={{
+                                              borderColor: isDark ? 'rgba(148, 163, 184, 0.3)' : 'rgba(100, 116, 139, 0.3)',
+                                              '& .MuiChip-icon': { ml: 0.5 }
+                                            }}
+                                          />
+                                        ))}
+                                      </Stack>
+                                    </Grid>
+                                  )}
+                                </Grid>
+                              </Box>
+                            </Collapse>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      </React.Fragment>
                     );
                   })}
                   </AnimatePresence>
@@ -487,7 +670,7 @@ export default function JournalEntryList() {
       {/* Entry Detail Modal */}
       <Dialog
         open={!!selectedEntry}
-        onClose={() => setSelectedEntry(null)}
+        onClose={() => { setSelectedEntry(null); setIsEditing(false); setEditFormData(null); }}
         maxWidth="md"
         fullWidth
         TransitionProps={{
@@ -506,156 +689,364 @@ export default function JournalEntryList() {
           <>
             <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <MapPin size={24} />
+                <Calendar size={24} />
                 <Box>
-                  <Typography variant="h6">{selectedEntry.streamName}</Typography>
-                  {selectedEntry.riverStretch && (
-                    <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <Navigation size={14} />
-                      {selectedEntry.riverStretch}
+                  {isEditing ? (
+                    <Typography variant="h6" color="primary">Editing Entry</Typography>
+                  ) : (
+                    <Typography variant="h6">
+                      {dayjs(selectedEntry.date).format('MMMM D, YYYY')}
                     </Typography>
                   )}
-                  <Typography variant="body2" color="text.secondary">
-                    {dayjs(selectedEntry.date).format('MMMM D, YYYY')}
-                  </Typography>
                 </Box>
               </Box>
-              <IconButton onClick={() => setSelectedEntry(null)} size="small">
-                <X size={20} />
-              </IconButton>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {!isEditing && (
+                  <Tooltip title="Edit entry">
+                    <IconButton onClick={handleStartEdit} size="small" color="primary">
+                      <Edit2 size={20} />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                <IconButton onClick={() => { setSelectedEntry(null); setIsEditing(false); setEditFormData(null); }} size="small">
+                  <X size={20} />
+                </IconButton>
+              </Box>
             </DialogTitle>
             <DialogContent dividers>
+              {isEditing && editFormData ? (
+                /* Edit Mode Form */
+                <Grid container spacing={3}>
+                  {/* Required Fields */}
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      label="Date"
+                      type="date"
+                      fullWidth
+                      required
+                      value={editFormData.date}
+                      onChange={(e) => handleEditFieldChange('date', e.target.value)}
+                      onBlur={() => validateField('date', editFormData.date)}
+                      error={!!errors.date}
+                      helperText={errors.date}
+                      InputLabelProps={{ shrink: true }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Autocomplete
+                      freeSolo
+                      options={allArkansasStreams}
+                      value={editFormData.streamName}
+                      onChange={(_, newValue) => handleEditFieldChange('streamName', newValue || '')}
+                      onInputChange={(_, newValue) => handleEditFieldChange('streamName', newValue)}
+                      onBlur={() => validateField('streamName', editFormData.streamName)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Stream Name"
+                          required
+                          error={!!errors.streamName}
+                          helperText={errors.streamName}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="River Stretch"
+                      fullWidth
+                      value={editFormData.riverStretch || ''}
+                      onChange={(e) => handleEditFieldChange('riverStretch', e.target.value)}
+                      placeholder="e.g., Dalton to Highway 90 Bridge"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Fishing Party"
+                      fullWidth
+                      value={editFormData.tripMembers || ''}
+                      onChange={(e) => handleEditFieldChange('tripMembers', e.target.value)}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}><Divider><Typography variant="caption">Catch Details</Typography></Divider></Grid>
+
+                  <Grid item xs={12} md={4}>
+                    <TextField
+                      label="Number Caught"
+                      type="number"
+                      fullWidth
+                      value={editFormData.numberCaught || ''}
+                      onChange={(e) => handleEditFieldChange('numberCaught', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <TextField
+                      label="Fish Species"
+                      fullWidth
+                      value={editFormData.fishSpecies || ''}
+                      onChange={(e) => handleEditFieldChange('fishSpecies', e.target.value)}
+                      placeholder="e.g., Walleye, Smallmouth Bass"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Bait Used"
+                      fullWidth
+                      value={editFormData.baitUsed || ''}
+                      onChange={(e) => handleEditFieldChange('baitUsed', e.target.value)}
+                      placeholder="e.g., Shad Rap, Jig and Pig"
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}><Divider><Typography variant="caption">Weather</Typography></Divider></Grid>
+
+                  <Grid item xs={12} md={4}>
+                    <TextField
+                      label="Weather Conditions"
+                      fullWidth
+                      value={editFormData.weatherConditions || ''}
+                      onChange={(e) => handleEditFieldChange('weatherConditions', e.target.value)}
+                      placeholder="e.g., Sunny, Cloudy"
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={4}>
+                    <TextField
+                      label="Air Temp Low (°F)"
+                      type="number"
+                      fullWidth
+                      value={editFormData.airTempLow || ''}
+                      onChange={(e) => handleEditFieldChange('airTempLow', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={4}>
+                    <TextField
+                      label="Air Temp High (°F)"
+                      type="number"
+                      fullWidth
+                      value={editFormData.airTempHigh || ''}
+                      onChange={(e) => handleEditFieldChange('airTempHigh', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={4}>
+                    <TextField
+                      label="Wind Velocity (mph)"
+                      fullWidth
+                      value={editFormData.windVelocity || ''}
+                      onChange={(e) => handleEditFieldChange('windVelocity', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={4}>
+                    <TextField
+                      label="Wind Direction"
+                      fullWidth
+                      value={editFormData.windDirection || ''}
+                      onChange={(e) => handleEditFieldChange('windDirection', e.target.value)}
+                      placeholder="e.g., NW, SE"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <TextField
+                      label="Moon Phase"
+                      fullWidth
+                      value={editFormData.moonPhase || ''}
+                      onChange={(e) => handleEditFieldChange('moonPhase', e.target.value)}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}><Divider><Typography variant="caption">Water Conditions</Typography></Divider></Grid>
+
+                  <Grid item xs={12} md={4}>
+                    <TextField
+                      label="Water Clarity"
+                      fullWidth
+                      value={editFormData.waterClarity || ''}
+                      onChange={(e) => handleEditFieldChange('waterClarity', e.target.value)}
+                      placeholder="e.g., Clear, Stained"
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={4}>
+                    <TextField
+                      label="Flow Rate (cfs)"
+                      fullWidth
+                      value={editFormData.flowRate || ''}
+                      onChange={(e) => handleEditFieldChange('flowRate', e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={6} md={4}>
+                    <TextField
+                      label="Gauge Height (ft)"
+                      fullWidth
+                      value={editFormData.gaugeHeight || ''}
+                      onChange={(e) => handleEditFieldChange('gaugeHeight', e.target.value)}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}><Divider><Typography variant="caption">Notes</Typography></Divider></Grid>
+
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Notes"
+                      fullWidth
+                      multiline
+                      rows={4}
+                      value={editFormData.notes || ''}
+                      onChange={(e) => handleEditFieldChange('notes', e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
+              ) : (
+              /* View Mode */
               <MotionBox
                 variants={prefersReducedMotion ? {} : modalContentVariants}
                 initial="hidden"
                 animate="visible"
               >
               <Grid container spacing={3}>
-                {/* Trip Members */}
-                {selectedEntry.tripMembers && (
-                  <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                      <Users size={20} />
-                      <Typography variant="subtitle1" fontWeight="bold">Fishing Party</Typography>
+                {/* River Name */}
+                <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <MapPin size={20} className="text-slate-400" />
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">River</Typography>
+                      <Typography variant="h6">{selectedEntry.streamName}</Typography>
                     </Box>
-                    <Typography variant="body2" sx={{ pl: 3.5 }}>
-                      {selectedEntry.tripMembers}
-                    </Typography>
-                  </Grid>
-                )}
+                  </Box>
+                </Grid>
 
-                {/* Catch Details */}
-                <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                    <FishIcon
-                      species={selectedEntry.fishSpecies || ''}
-                      size="md"
-                      fallback={<Fish size={20} className="text-emerald-500" />}
-                    />
-                    <Typography variant="subtitle1" fontWeight="bold">Catch Details</Typography>
-                  </Box>
-                  <Box sx={{ pl: 3.5 }}>
-                    <Typography variant="h4" color="primary" gutterBottom>
-                      {selectedEntry.numberCaught || 0} fish
-                    </Typography>
-                    {selectedEntry.fishSpecies ? (
-                      <Stack spacing={1}>
-                        {(() => {
-                          const grouped = groupSpeciesByCategory(selectedEntry.fishSpecies || '');
-                          return Object.entries(grouped).map(([category, speciesList]) => {
-                            if (speciesList.length === 0) return null;
-                            const label = categoryLabels[category] || 'Other';
-                            return (
-                              <Box key={category}>
-                                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                                  {label}:
-                                </Typography>
-                                <Stack spacing={0.5} sx={{ pl: 1, mt: 0.5 }}>
-                                  {speciesList.map((species) => (
-                                    <Box key={species} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                      <FishIcon species={species} size="sm" />
-                                      <Typography variant="body1">{species}</Typography>
-                                    </Box>
-                                  ))}
-                                </Stack>
-                              </Box>
-                            );
-                          });
-                        })()}
-                      </Stack>
-                    ) : (
-                      <Typography variant="body1">No species recorded</Typography>
-                    )}
-                    {selectedEntry.baitUsed && (
-                      <Box sx={{ mt: 2 }}>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500, mb: 1 }}>
-                          Bait Used:
-                        </Typography>
-                        <Stack spacing={0.5} sx={{ pl: 1 }}>
-                          {selectedEntry.baitUsed.split(',').map((bait, idx) => (
-                            <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <LureIcon
-                                bait={bait.trim()}
-                                size="sm"
-                                fallback={<Anchor size={16} className="text-slate-400" />}
-                              />
-                              <Typography variant="body1">{bait.trim()}</Typography>
-                            </Box>
-                          ))}
-                        </Stack>
+                {/* River Stretch */}
+                <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
+                  {selectedEntry.riverStretch ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Navigation size={20} className="text-slate-400" />
+                      <Box>
+                        <Typography variant="caption" color="text.secondary">Stretch</Typography>
+                        <Typography variant="body1">{selectedEntry.riverStretch}</Typography>
                       </Box>
-                    )}
+                    </Box>
+                  ) : (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, opacity: 0.5 }}>
+                      <Navigation size={20} className="text-slate-400" />
+                      <Box>
+                        <Typography variant="caption" color="text.secondary">Stretch</Typography>
+                        <Typography variant="body2" color="text.secondary">Not specified</Typography>
+                      </Box>
+                    </Box>
+                  )}
+                </Grid>
+
+                <Grid item xs={12}><Divider /></Grid>
+
+                {/* Fishing Party */}
+                <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Users size={20} className="text-slate-400" />
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">Fishing Party</Typography>
+                      {selectedEntry.tripMembers ? (
+                        <Typography variant="body1">{selectedEntry.tripMembers}</Typography>
+                      ) : (
+                        <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.5 }}>Solo trip</Typography>
+                      )}
+                    </Box>
                   </Box>
+                </Grid>
+
+                <Grid item xs={12}><Divider /></Grid>
+
+                {/* Catch Details Header */}
+                <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Fish size={20} className="text-slate-400" />
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">Catch Details</Typography>
+                      <Typography variant="h6">
+                        {selectedEntry.numberCaught || 0} fish
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+
+                {/* Species Caught - Left Column */}
+                <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
+                  <Typography variant="caption" color="text.secondary">Species Caught</Typography>
+                  {selectedEntry.fishSpecies ? (
+                    <Stack spacing={0.5} sx={{ mt: 0.5 }}>
+                      {selectedEntry.fishSpecies.split(',').map((species, idx) => (
+                        <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <FishIcon species={species.trim()} size="sm" />
+                          <Typography variant="body1">{species.trim()}</Typography>
+                        </Box>
+                      ))}
+                    </Stack>
+                  ) : (
+                    <Typography variant="body1" sx={{ opacity: 0.5 }}>No species recorded</Typography>
+                  )}
+                </Grid>
+
+                {/* Bait Used - Right Column */}
+                <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
+                  <Typography variant="caption" color="text.secondary">Bait Used</Typography>
+                  {selectedEntry.baitUsed ? (
+                    <Stack spacing={0.5} sx={{ mt: 0.5 }}>
+                      {selectedEntry.baitUsed.split(',').map((bait, idx) => (
+                        <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <LureIcon
+                            bait={bait.trim()}
+                            size="sm"
+                            fallback={<Anchor size={16} className="text-slate-400" />}
+                          />
+                          <Typography variant="body1">{bait.trim()}</Typography>
+                        </Box>
+                      ))}
+                    </Stack>
+                  ) : (
+                    <Typography variant="body1" sx={{ opacity: 0.5 }}>No bait recorded</Typography>
+                  )}
                 </Grid>
 
                 <Grid item xs={12}><Divider /></Grid>
 
                 {/* Weather Conditions */}
                 <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                    <Wind size={20} />
-                    <Typography variant="subtitle1" fontWeight="bold">Weather</Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Wind size={20} className="text-slate-400" />
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">Weather</Typography>
+                      {selectedEntry.weatherConditions && (
+                        <Typography variant="h6">{selectedEntry.weatherConditions}</Typography>
+                      )}
+                    </Box>
                   </Box>
-                  <Stack spacing={1.5} sx={{ pl: 3.5 }}>
-                    {selectedEntry.weatherConditions && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2" color="text.secondary" sx={{ width: 100 }}>Sky:</Typography>
-                        <Chip label={selectedEntry.weatherConditions} size="small" />
-                      </Box>
-                    )}
+                  <Stack spacing={0.5} sx={{ mt: 1 }}>
                     {(selectedEntry.airTempLow || selectedEntry.airTempHigh) && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Thermometer size={16} />
-                        <Typography variant="body2" color="text.secondary" sx={{ width: 84 }}>Temp:</Typography>
-                        <Typography variant="body2">{selectedEntry.airTempLow}°F – {selectedEntry.airTempHigh}°F</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ minWidth: 60 }}>Temp:</Typography>
+                        <Typography variant="body1">{selectedEntry.airTempLow}°F – {selectedEntry.airTempHigh}°F</Typography>
                       </Box>
                     )}
                     {(selectedEntry.windVelocity || selectedEntry.windDirection) && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Wind size={16} />
-                        <Typography variant="body2" color="text.secondary" sx={{ width: 84 }}>Wind:</Typography>
-                        <Typography variant="body2">{selectedEntry.windVelocity} mph {selectedEntry.windDirection}</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ minWidth: 60 }}>Wind:</Typography>
+                        <Typography variant="body1">{selectedEntry.windVelocity} mph {selectedEntry.windDirection}</Typography>
                       </Box>
                     )}
                     {selectedEntry.barometricPressure && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Gauge size={16} />
-                        <Typography variant="body2" color="text.secondary" sx={{ width: 84 }}>Pressure:</Typography>
-                        <Typography variant="body2">{selectedEntry.barometricPressure} inHg</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ minWidth: 60 }}>Pressure:</Typography>
+                        <Typography variant="body1">{selectedEntry.barometricPressure} inHg</Typography>
                       </Box>
                     )}
                     {selectedEntry.moonPhase && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Moon size={16} />
-                        <Typography variant="body2" color="text.secondary" sx={{ width: 84 }}>Moon:</Typography>
-                        <Typography variant="body2">{selectedEntry.moonPhase}</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ minWidth: 60 }}>Moon:</Typography>
+                        <Typography variant="body1">{selectedEntry.moonPhase}</Typography>
                       </Box>
                     )}
                     {selectedEntry.precipitation && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <CloudRain size={16} />
-                        <Typography variant="body2" color="text.secondary" sx={{ width: 84 }}>Precip:</Typography>
-                        <Typography variant="body2">{selectedEntry.precipitation}"</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ minWidth: 60 }}>Precip:</Typography>
+                        <Typography variant="body1">{selectedEntry.precipitation}"</Typography>
                       </Box>
                     )}
                   </Stack>
@@ -663,39 +1054,38 @@ export default function JournalEntryList() {
 
                 {/* Water Conditions */}
                 <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                    <Droplets size={20} />
-                    <Typography variant="subtitle1" fontWeight="bold">Water Conditions</Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Droplets size={20} className="text-slate-400" />
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">Water Conditions</Typography>
+                      {selectedEntry.waterClarity && (
+                        <Typography variant="h6">{selectedEntry.waterClarity}</Typography>
+                      )}
+                    </Box>
                   </Box>
-                  <Stack spacing={1.5} sx={{ pl: 3.5 }}>
-                    {selectedEntry.waterClarity && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2" color="text.secondary" sx={{ width: 100 }}>Clarity:</Typography>
-                        <Typography variant="body2">{selectedEntry.waterClarity}</Typography>
-                      </Box>
-                    )}
+                  <Stack spacing={0.5} sx={{ mt: 1 }}>
                     {selectedEntry.flowRate && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2" color="text.secondary" sx={{ width: 100 }}>Flow Rate:</Typography>
-                        <Typography variant="body2">{selectedEntry.flowRate} cfs</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>Flow Rate:</Typography>
+                        <Typography variant="body1">{selectedEntry.flowRate} cfs</Typography>
                       </Box>
                     )}
                     {selectedEntry.riverDepth && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2" color="text.secondary" sx={{ width: 100 }}>Depth:</Typography>
-                        <Typography variant="body2">{selectedEntry.riverDepth} ft</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>Depth:</Typography>
+                        <Typography variant="body1">{selectedEntry.riverDepth} ft</Typography>
                       </Box>
                     )}
                     {selectedEntry.waterTemperature && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2" color="text.secondary" sx={{ width: 100 }}>Water Temp:</Typography>
-                        <Typography variant="body2">{selectedEntry.waterTemperature}°F</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>Water Temp:</Typography>
+                        <Typography variant="body1">{selectedEntry.waterTemperature}°F</Typography>
                       </Box>
                     )}
                     {selectedEntry.usgsGauge && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2" color="text.secondary" sx={{ width: 100 }}>USGS Gauge:</Typography>
-                        <Typography variant="body2">{selectedEntry.usgsGauge}</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>USGS Gauge:</Typography>
+                        <Typography variant="body1">{selectedEntry.usgsGauge}</Typography>
                       </Box>
                     )}
                   </Stack>
@@ -706,29 +1096,57 @@ export default function JournalEntryList() {
                   <>
                     <Grid item xs={12}><Divider /></Grid>
                     <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                        <FileText size={20} />
-                        <Typography variant="subtitle1" fontWeight="bold">Notes</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                        <FileText size={20} className="text-slate-400" style={{ marginTop: 2 }} />
+                        <Box>
+                          <Typography variant="caption" color="text.secondary">Notes</Typography>
+                          <Stack spacing={1} sx={{ mt: 0.5 }}>
+                            {formatNotes(selectedEntry.notes).map((paragraph, idx) => (
+                              <Typography key={idx} variant="body1" sx={{ lineHeight: 1.6 }}>
+                                {paragraph}
+                              </Typography>
+                            ))}
+                          </Stack>
+                        </Box>
                       </Box>
-                      <Stack spacing={1.5} sx={{ pl: 3.5 }}>
-                        {formatNotes(selectedEntry.notes).map((paragraph, idx) => (
-                          <Typography key={idx} variant="body2" sx={{ lineHeight: 1.6 }}>
-                            {paragraph}
-                          </Typography>
-                        ))}
-                      </Stack>
                     </Grid>
                   </>
                 )}
               </Grid>
               </MotionBox>
+              )}
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => setSelectedEntry(null)}>Close</Button>
+              {isEditing ? (
+                <>
+                  <Button onClick={handleCancelEdit}>Cancel</Button>
+                  <Button onClick={handleSaveEdit} variant="contained" startIcon={<Save size={18} />}>
+                    Save Changes
+                  </Button>
+                </>
+              ) : (
+                <Button onClick={() => { setSelectedEntry(null); setIsEditing(false); }}>Close</Button>
+              )}
             </DialogActions>
           </>
         )}
       </Dialog>
+
+      {/* Success Snackbar */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
