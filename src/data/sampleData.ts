@@ -673,7 +673,10 @@ export const sampleEntries: FormData[] = [
     baitUsed: 'Perch Shad Rap, Brown/Black Jig with Leech Trailer, Hair Jig, Spoon',
     wifesMood: '',
     notes: "First day of modern gun season. Wonderful day on the river. Windy, cool, high of 51, gusts to 20 mph. Caught 35 fish including a sauger on the PSR, two stripers on the PSR, a 15.5\" brownie that went 2 pounds 10 ounces on the PSR. Mr. Scott caught a 2-pound brownie on a brown/black jig with a leech trailer.\n\nMy hair jig - quarter ounce gray with red hackle - started catching when I tipped it with a nightcrawler. My two best fish, the sauger and the large brownie, came on the PSR. The spoon caught two. Fish hit natural colors most of the day, which should tell you something but probably won't.\n\nSaw ducks, kingfishers, osprey, hooded mergansers. Leaves in the water column making everything harder than it needed to be. Shad scent worked well. We retained four spots, one sauger, two stripers.",
-    pictures: [],
+    pictures: [
+      { id: 'photo-2021-11-13-1', url: '/photos/2021-11-13_190040_50.jpg', caption: 'Spring River - Rio Vista area' },
+      { id: 'photo-2021-11-13-2', url: '/photos/2021-11-13_190040_51.jpg', caption: 'November fishing trip' }
+    ],
     airTempHigh: '47',
     airTempLow: '32',
     barometricPressure: '29.53',
@@ -723,7 +726,11 @@ export const sampleEntries: FormData[] = [
     baitUsed: 'Jig and Pig (Gord Green Orange, Watermelon Red), Hair Jig',
     wifesMood: '',
     notes: "Final day of the three-day weekend. Mullen down to Harold B. Alexander, about three miles of water we know better than our own driveways. Caught 8 bass, 1 walleye, 3 spots and 2 brownies. The hair jig - that gray round quarter-ounce with the red hackle - was the most productive lure of the entire weekend, which is something I should probably remember but won't.\n\nOpened up 20 fish from the three-day stretch. Only 2 had crawfish in them. The rest were running on empty or secrets. Frontal passage, probably. A miracle we caught what we did. Shad baits prevailed when nothing else made sense.",
-    pictures: [],
+    pictures: [
+      { id: 'photo-2021-11-15-1', url: '/photos/2021-11-15_151146_53.jpg', caption: 'Mullen to Harold B. Alexander' },
+      { id: 'photo-2021-11-15-2', url: '/photos/2021-11-15_151146_54.jpg', caption: 'Final day of three-day weekend' },
+      { id: 'photo-2021-11-15-3', url: '/photos/2021-11-15_151146_55.jpg', caption: 'Spring River November trip' }
+    ],
     airTempHigh: '64',
     airTempLow: '37',
     barometricPressure: '29.48',
@@ -748,7 +755,9 @@ export const sampleEntries: FormData[] = [
     baitUsed: 'Blue Shad Rap, Spoon, BCW, Square Bills, Jig and Pig, T-rigged Centipede',
     wifesMood: '',
     notes: "Harold B. Alexander down to Ravenden with Mr. Scott, WC, and SR. Overnight trip with a camp near Watts Bluff. The river was running at 3.60', which is to say it was cooperating. We made Ravenden by midday and discovered we'd left the takeout vehicle at Imboden. Seven miles downstream.\n\nWC, SR, and I walked it. Mr. Scott stayed with the boats, probably the smart play. You learn things about yourself on a seven-mile walk you didn't ask to learn.\n\nFor the day and a half, though, we did well. 1 walleye, 3 sauger, 1 saugeye, 3 hybrid striped bass, 1 bluegill, 5 drum, 45 smallies, 30 spots. Blue Shad Rap, spoon, BCW, square bills, jig and peed, T-rigged centipede. The weather was sunny, breezy, cool with rain late, and the fishing made up for the logistics.\n\nMotor and battery issues. No spare vehicle. Should have pre-scouted the back way into Harold B. from Highway 62. That's what the notebook's for.",
-    pictures: [],
+    pictures: [
+      { id: 'photo-2022-10-29-1', url: '/photos/2022-10-29_185814_67.jpg', caption: 'Overnight trip near Watts Bluff - 88 fish' }
+    ],
     airTempHigh: '69',
     airTempLow: '44',
     barometricPressure: '29.60',
@@ -773,7 +782,10 @@ export const sampleEntries: FormData[] = [
     baitUsed: '',
     wifesMood: '',
     notes: "Started on the Strawberry, low water bridge down to Pebbles Ramp. The holes were filled with sand. Flood damage had turned it into a beach with current. Sand, sand, and more sand. We left.\n\nPointed toward the Spring River, put in at Ed Mullin's ramp and floated down to Harold B. Caught 1 black, 1 sauger, 1 catfish, 1 longear. That evening at Rio Vista we caught 2 walleyes, which felt like an apology from the river for the Strawberry.",
-    pictures: [],
+    pictures: [
+      { id: 'photo-2023-04-17-1', url: '/photos/2023-04-17_202718_79.jpg', caption: 'Spring River April trip' },
+      { id: 'photo-2023-04-17-2', url: '/photos/2023-04-17_202718_80.jpg', caption: 'Ed Mullins Ramp to Harold B.' }
+    ],
     airTempHigh: '71',
     airTempLow: '45',
     barometricPressure: '29.38',
@@ -823,7 +835,11 @@ export const sampleEntries: FormData[] = [
     baitUsed: 'Gord Green Orange Centipede, Watermelon Red Centipede, #7 Blue/White Shad Rap, #5 BCW Shad Rap',
     wifesMood: '',
     notes: "Twelve miles, more or less. River stage at 2.93', 330 cfs. Daybreak to 5 p.m. The weather was cool, breezy, and sunny. Water stained but only slightly, like tea you can still see through.\n\nCaught 35 fish including a 17-inch smallie, 3 walleyes, 5 bream. I took 15 bass, 2 walleyes, spots, brownies, 1 nice rainbow, blacks. There is no put-in at Williford anymore. All private land now, which is the way of things.\n\nGord green orange and watermelon red centipede worked. The Blue/White Shad Rap #7 and the BCW #5 did what they've been doing since the '90s. Opened up the fish and found 2-inch crawfish - brown, green, and orange. The Gord green jig and peed had been right all along. There were also three-quarter-inch bream in there.\n\nSaw herons, eagles, crows, a Sharp-Shinned Hawk, turtles, and a spike buck deer. Kept 10 fish.",
-    pictures: [],
+    pictures: [
+      { id: 'photo-2023-10-19-1', url: '/photos/2023-10-19_090910_82.jpg', caption: 'Twelve mile float - 35 fish' },
+      { id: 'photo-2023-10-19-2', url: '/photos/2023-10-19_090910_83.jpg', caption: 'October on the Spring River' },
+      { id: 'photo-2023-10-19-3', url: '/photos/2023-10-19_090910_84.jpg', caption: '17-inch smallie and 3 walleyes' }
+    ],
     airTempHigh: '68',
     airTempLow: '42',
     barometricPressure: '29.47',
