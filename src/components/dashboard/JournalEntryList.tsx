@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   Box,
   Typography,
@@ -32,7 +32,8 @@ import {
   Alert
 } from '@mui/material';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, ArrowUpDown, Users, Navigation, ChevronDown, Edit2, Save } from 'lucide-react';
+import { keyframes } from '@mui/material';
+import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, ArrowUpDown, Users, Navigation, ChevronDown, ChevronLeft, ChevronRight, Edit2, Save } from 'lucide-react';
 import { FormData } from '../../types';
 import { useJournal } from '../../context/JournalContext';
 import { journalPalette } from '../../theme/journalTheme';
@@ -76,6 +77,29 @@ const modalContentVariants = {
   },
 };
 
+// Page flip animations
+const pageFlip3dNext = keyframes`
+  0% { transform: perspective(1500px) rotateY(0deg); opacity: 1; }
+  50% { transform: perspective(1500px) rotateY(-90deg); opacity: 0.5; }
+  100% { transform: perspective(1500px) rotateY(-180deg); opacity: 0; }
+`;
+
+const pageFlip3dPrev = keyframes`
+  0% { transform: perspective(1500px) rotateY(0deg); opacity: 1; }
+  50% { transform: perspective(1500px) rotateY(90deg); opacity: 0.5; }
+  100% { transform: perspective(1500px) rotateY(180deg); opacity: 0; }
+`;
+
+const slideOutLeft = keyframes`
+  0% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(-30px); opacity: 0; }
+`;
+
+const slideOutRight = keyframes`
+  0% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(30px); opacity: 0; }
+`;
+
 const modalItemVariants = {
   hidden: { opacity: 0, y: 10 },
   visible: {
@@ -118,6 +142,7 @@ function formatNotes(notes: string): string[] {
 
 export default function JournalEntryList() {
   const { state, dispatch } = useJournal();
+  const { pageFlipStyle } = state;
   const theme = useTheme();
   const prefersReducedMotion = useReducedMotion();
   const [viewMode] = useState<'grid' | 'list'>('list');
@@ -134,6 +159,8 @@ export default function JournalEntryList() {
     message: '',
     severity: 'success'
   });
+  const [navDirection, setNavDirection] = useState<'next' | 'prev' | null>(null);
+  const [isFlipping, setIsFlipping] = useState(false);
   const isDark = theme.palette.mode === 'dark';
 
   // Validation for edit form
@@ -222,6 +249,80 @@ export default function JournalEntryList() {
       dispatch({ type: 'DELETE_ENTRY', payload: index });
     }
   };
+
+  // Computed filtered entries for navigation
+  const filteredEntriesForNav = useMemo(() => {
+    return state.entries.filter(entry => {
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        entry.streamName.toLowerCase().includes(searchLower) ||
+        entry.fishSpecies?.toLowerCase().includes(searchLower) ||
+        entry.notes?.toLowerCase().includes(searchLower)
+      );
+    }).sort((a, b) => {
+      const dateA = dayjs(a.date).valueOf();
+      const dateB = dayjs(b.date).valueOf();
+      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+  }, [state.entries, searchTerm, sortOrder]);
+
+  // Get current position in filtered entries
+  const currentNavIndex = useMemo(() => {
+    if (!selectedEntry) return -1;
+    return filteredEntriesForNav.findIndex(e =>
+      e.date === selectedEntry.date && e.streamName === selectedEntry.streamName
+    );
+  }, [selectedEntry, filteredEntriesForNav]);
+
+  const canGoPrev = currentNavIndex > 0;
+  const canGoNext = currentNavIndex < filteredEntriesForNav.length - 1 && currentNavIndex !== -1;
+
+  const handleNavPrev = useCallback(() => {
+    if (!canGoPrev || isFlipping || isEditing) return;
+    setNavDirection('prev');
+    setIsFlipping(true);
+
+    const animDuration = pageFlipStyle === '3d' ? 400 : 250;
+    setTimeout(() => {
+      const prevEntry = filteredEntriesForNav[currentNavIndex - 1];
+      const originalIndex = state.entries.indexOf(prevEntry);
+      setSelectedEntry(prevEntry);
+      setSelectedEntryIndex(originalIndex);
+      setIsFlipping(false);
+    }, animDuration);
+  }, [canGoPrev, isFlipping, isEditing, pageFlipStyle, filteredEntriesForNav, currentNavIndex, state.entries]);
+
+  const handleNavNext = useCallback(() => {
+    if (!canGoNext || isFlipping || isEditing) return;
+    setNavDirection('next');
+    setIsFlipping(true);
+
+    const animDuration = pageFlipStyle === '3d' ? 400 : 250;
+    setTimeout(() => {
+      const nextEntry = filteredEntriesForNav[currentNavIndex + 1];
+      const originalIndex = state.entries.indexOf(nextEntry);
+      setSelectedEntry(nextEntry);
+      setSelectedEntryIndex(originalIndex);
+      setIsFlipping(false);
+    }, animDuration);
+  }, [canGoNext, isFlipping, isEditing, pageFlipStyle, filteredEntriesForNav, currentNavIndex, state.entries]);
+
+  // Keyboard navigation
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedEntry || isEditing) return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        handleNavPrev();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        handleNavNext();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedEntry, isEditing, handleNavPrev, handleNavNext]);
 
   const filteredEntries = state.entries.filter(entry => {
     const searchLower = searchTerm.toLowerCase();
@@ -343,7 +444,7 @@ export default function JournalEntryList() {
                     : `rgba(139, 107, 74, 0.15)`,
                   '& .MuiTableCell-head': {
                     fontFamily: '"Special Elite", "Courier New", monospace',
-                    color: journalPalette.leatherDeep,
+                    color: isDark ? journalPalette.warmCream : journalPalette.leatherDeep,
                   },
                 }}>
                   <TableRow>
@@ -660,6 +761,67 @@ export default function JournalEntryList() {
       >
         {selectedEntry && (
           <>
+            {/* Navigation Arrows */}
+            {!isEditing && (
+              <>
+                {/* Left Arrow */}
+                <IconButton
+                  onClick={handleNavPrev}
+                  disabled={!canGoPrev || isFlipping}
+                  sx={{
+                    position: 'fixed',
+                    left: { xs: 8, sm: 16, md: 'calc(50% - 500px)' },
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    zIndex: 1400,
+                    bgcolor: journalPalette.leatherMid,
+                    color: journalPalette.creamLight,
+                    border: `2px solid ${journalPalette.leatherLight}`,
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                    width: { xs: 40, sm: 48 },
+                    height: { xs: 40, sm: 48 },
+                    '&:hover': {
+                      bgcolor: journalPalette.leatherDark,
+                    },
+                    '&.Mui-disabled': {
+                      opacity: 0.3,
+                      bgcolor: journalPalette.leatherMid,
+                    },
+                  }}
+                >
+                  <ChevronLeft size={24} />
+                </IconButton>
+
+                {/* Right Arrow */}
+                <IconButton
+                  onClick={handleNavNext}
+                  disabled={!canGoNext || isFlipping}
+                  sx={{
+                    position: 'fixed',
+                    right: { xs: 8, sm: 16, md: 'calc(50% - 500px)' },
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    zIndex: 1400,
+                    bgcolor: journalPalette.leatherMid,
+                    color: journalPalette.creamLight,
+                    border: `2px solid ${journalPalette.leatherLight}`,
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                    width: { xs: 40, sm: 48 },
+                    height: { xs: 40, sm: 48 },
+                    '&:hover': {
+                      bgcolor: journalPalette.leatherDark,
+                    },
+                    '&.Mui-disabled': {
+                      opacity: 0.3,
+                      bgcolor: journalPalette.leatherMid,
+                    },
+                  }}
+                >
+                  <ChevronRight size={24} />
+                </IconButton>
+              </>
+            )}
+
             <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Calendar size={24} />
@@ -667,9 +829,16 @@ export default function JournalEntryList() {
                   {isEditing ? (
                     <Typography variant="h6" color="primary">Editing Entry</Typography>
                   ) : (
-                    <Typography variant="h6">
-                      {dayjs(selectedEntry.date).format('MMMM D, YYYY')}
-                    </Typography>
+                    <>
+                      <Typography variant="h6">
+                        {dayjs(selectedEntry.date).format('MMMM D, YYYY')}
+                      </Typography>
+                      {filteredEntriesForNav.length > 1 && (
+                        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                          Entry {currentNavIndex + 1} of {filteredEntriesForNav.length}
+                        </Typography>
+                      )}
+                    </>
                   )}
                 </Box>
               </Box>
@@ -686,7 +855,17 @@ export default function JournalEntryList() {
                 </IconButton>
               </Box>
             </DialogTitle>
-            <DialogContent dividers>
+            <DialogContent
+              dividers
+              sx={{
+                transformOrigin: navDirection === 'next' ? 'left center' : 'right center',
+                animation: isFlipping
+                  ? pageFlipStyle === '3d'
+                    ? `${navDirection === 'next' ? pageFlip3dNext : pageFlip3dPrev} 400ms ease-out forwards`
+                    : `${navDirection === 'next' ? slideOutLeft : slideOutRight} 250ms ease-out forwards`
+                  : 'none',
+              }}
+            >
               {isEditing && editFormData ? (
                 /* Edit Mode Form */
                 <Grid container spacing={3}>

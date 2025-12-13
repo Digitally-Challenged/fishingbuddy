@@ -7,12 +7,21 @@ import { Plus, X } from 'lucide-react';
 import FishingJournalForm from './components/WizardForm';
 import Dashboard from './components/Dashboard';
 import Layout from './components/layout/Layout';
+import JournalCover from './components/JournalCover';
 import { journalTheme, journalDarkOverrides, journalPalette } from './theme/journalTheme';
 import { JournalProvider, useJournal } from './context/JournalContext';
 
+const SESSION_KEY = 'journalOpened';
+
 function AppContent() {
   const [openNewEntry, setOpenNewEntry] = useState(false);
+  const [isJournalOpen, setIsJournalOpen] = useState(false); // DEV: always show cover
   const { state: { darkMode } } = useJournal();
+
+  const handleOpenJournal = () => {
+    sessionStorage.setItem(SESSION_KEY, 'true');
+    setIsJournalOpen(true);
+  };
 
   const theme = useMemo(
     () =>
@@ -31,6 +40,7 @@ function AppContent() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      {!isJournalOpen && <JournalCover onOpen={handleOpenJournal} />}
       <Layout onNavigate={handleNavigate}>
         <Container maxWidth={false} sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
           <Dashboard />

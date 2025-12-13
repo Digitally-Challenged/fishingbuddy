@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AppBar, Toolbar, Typography, Box, Container, IconButton, Button, Stack, alpha, Tooltip } from '@mui/material';
-import { Fish, Menu, ExternalLink, Sun, Moon } from 'lucide-react';
+import { Fish, Menu, ExternalLink, Sun, Moon, BookOpen, Layers } from 'lucide-react';
 import MobileMenu from './MobileMenu';
 import { useJournal } from '../../context/JournalContext';
 import { journalPalette } from '../../theme/journalTheme';
@@ -11,7 +11,7 @@ interface HeaderProps {
 
 export default function Header({ onNavigate }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { state: { darkMode }, toggleDarkMode } = useJournal();
+  const { state: { darkMode, pageFlipStyle }, toggleDarkMode, togglePageFlipStyle } = useJournal();
 
   const handleMenuOpen = () => {
     setMobileMenuOpen(true);
@@ -89,7 +89,6 @@ export default function Header({ onNavigate }: HeaderProps) {
                   onClick={toggleDarkMode}
                   sx={{
                     borderRadius: '8px',
-                    mr: 1,
                     color: journalPalette.creamLight,
                     '&:hover': {
                       bgcolor: alpha(journalPalette.creamLight, 0.1),
@@ -97,6 +96,21 @@ export default function Header({ onNavigate }: HeaderProps) {
                   }}
                 >
                   {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={pageFlipStyle === '3d' ? "3D Page Flip (click for Classic)" : "Classic Flip (click for 3D)"}>
+                <IconButton
+                  onClick={togglePageFlipStyle}
+                  sx={{
+                    borderRadius: '8px',
+                    mr: 1,
+                    color: journalPalette.creamLight,
+                    '&:hover': {
+                      bgcolor: alpha(journalPalette.creamLight, 0.1),
+                    },
+                  }}
+                >
+                  {pageFlipStyle === '3d' ? <BookOpen size={20} /> : <Layers size={20} />}
                 </IconButton>
               </Tooltip>
               <Button

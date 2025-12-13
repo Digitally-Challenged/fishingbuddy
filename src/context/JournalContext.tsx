@@ -6,10 +6,13 @@ import { storageUtils } from '../utils/storage';
 // Increment this when sample data changes to force a refresh
 const SAMPLE_DATA_VERSION = 4;
 
+type PageFlipStyle = '3d' | 'classic';
+
 interface JournalState {
   entries: FormData[];
   error: string | null;
   darkMode: boolean;
+  pageFlipStyle: PageFlipStyle;
 }
 
 type JournalAction =
@@ -20,12 +23,14 @@ type JournalAction =
   | { type: 'IMPORT_ENTRIES'; payload: FormData[] }
   | { type: 'CLEAR_ENTRIES' }
   | { type: 'SET_ERROR'; payload: string }
-  | { type: 'TOGGLE_DARK_MODE' };
+  | { type: 'TOGGLE_DARK_MODE' }
+  | { type: 'TOGGLE_PAGE_FLIP_STYLE' };
 
 const initialState: JournalState = {
   entries: storageUtils.loadEntries(),
   error: null,
   darkMode: storageUtils.loadDarkMode() ?? true,
+  pageFlipStyle: (localStorage.getItem('pageFlipStyle') as PageFlipStyle) || '3d',
 };
 
 const JournalContext = createContext<{
@@ -35,6 +40,7 @@ const JournalContext = createContext<{
   importEntries: (file: File) => Promise<void>;
   clearEntries: () => void;
   toggleDarkMode: () => void;
+  togglePageFlipStyle: () => void;
 } | undefined>(undefined);
 
 function journalReducer(state: JournalState, action: JournalAction): JournalState {
@@ -98,6 +104,13 @@ function journalReducer(state: JournalState, action: JournalAction): JournalStat
         };
         storageUtils.saveDarkMode(newState.darkMode);
         return newState;
+      case 'TOGGLE_PAGE_FLIP_STYLE':
+        const newStyle = state.pageFlipStyle === '3d' ? 'classic' : '3d';
+        localStorage.setItem('pageFlipStyle', newStyle);
+        return {
+          ...state,
+          pageFlipStyle: newStyle,
+        };
       default:
         return state;
     }
@@ -156,6 +169,10 @@ export function JournalProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'TOGGLE_DARK_MODE' });
   };
 
+  const togglePageFlipStyle = () => {
+    dispatch({ type: 'TOGGLE_PAGE_FLIP_STYLE' });
+  };
+
   // Load entries from localStorage on mount, with version check
   useEffect(() => {
     try {
@@ -191,7 +208,8 @@ export function JournalProvider({ children }: { children: ReactNode }) {
       exportEntries,
       importEntries,
       clearEntries,
-      toggleDarkMode
+      toggleDarkMode,
+      togglePageFlipStyle
     }}>
       {children}
     </JournalContext.Provider>
