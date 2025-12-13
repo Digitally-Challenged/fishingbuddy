@@ -35,6 +35,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, Thermometer, Gauge, Moon, CloudRain, ArrowUpDown, Users, Navigation, ChevronDown, Edit2, Save } from 'lucide-react';
 import { FormData } from '../../types';
 import { useJournal } from '../../context/JournalContext';
+import { journalPalette } from '../../theme/journalTheme';
 import { groupSpeciesByCategory, categoryLabels } from '../../data/fishSpecies';
 import { FishIcon } from '../FishIcon';
 import { LureIcon } from '../LureIcon';
@@ -682,7 +683,29 @@ export default function JournalEntryList() {
           animate: { opacity: 1, scale: 1 },
           exit: prefersReducedMotion ? {} : { opacity: 0 },
           transition: { duration: 0.2 },
-          sx: { backdropFilter: 'blur(4px)' }
+          sx: {
+            backdropFilter: 'blur(4px)',
+            border: `4px solid ${journalPalette.leatherDark}`,
+            backgroundImage: 'url(/textures/paper-cream.webp)',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '512px 512px',
+            position: 'relative',
+            overflow: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '48px',
+              backgroundImage: 'url(/textures/stitching-border.webp)',
+              backgroundRepeat: 'repeat-x',
+              backgroundSize: 'auto 48px',
+              backgroundPosition: 'center',
+              opacity: 0.5,
+              pointerEvents: 'none',
+            },
+          }
         } as object}
       >
         {selectedEntry && (

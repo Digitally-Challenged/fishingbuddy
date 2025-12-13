@@ -2,12 +2,12 @@ import { useState, useMemo } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Container, CssBaseline, Fab, Dialog, DialogContent, Box, IconButton, useMediaQuery } from '@mui/material';
+import { Container, CssBaseline, Fab, Dialog, DialogContent, Box, IconButton, useMediaQuery, alpha } from '@mui/material';
 import { Plus, X } from 'lucide-react';
 import FishingJournalForm from './components/WizardForm';
 import Dashboard from './components/Dashboard';
 import Layout from './components/layout/Layout';
-import { journalTheme, journalDarkOverrides } from './theme/journalTheme';
+import { journalTheme, journalDarkOverrides, journalPalette } from './theme/journalTheme';
 import { JournalProvider, useJournal } from './context/JournalContext';
 
 function AppContent() {
@@ -58,7 +58,30 @@ function AppContent() {
           maxWidth="md"
           fullWidth
           PaperProps={{
-            sx: { borderRadius: fullScreen ? 0 : 3 }
+            sx: {
+              borderRadius: fullScreen ? 0 : 2,
+              border: `4px solid ${journalPalette.leatherDark}`,
+              backgroundImage: 'url(/textures/paper-cream.webp)',
+              backgroundRepeat: 'repeat',
+              backgroundSize: '512px 512px',
+              position: 'relative',
+              overflow: 'hidden',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '48px',
+                backgroundImage: 'url(/textures/stitching-border.webp)',
+                backgroundRepeat: 'repeat-x',
+                backgroundSize: 'auto 48px',
+                backgroundPosition: 'center',
+                opacity: 0.5,
+                pointerEvents: 'none',
+              },
+              boxShadow: `0 8px 32px ${alpha(journalPalette.leatherDeep, 0.4)}`,
+            }
           }}
         >
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1 }}>
