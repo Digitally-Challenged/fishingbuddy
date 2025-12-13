@@ -1083,11 +1083,21 @@ export default function JournalEntryList() {
               <Grid container spacing={3}>
                 {/* River Name */}
                 <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <MapPin size={20} className="text-slate-400" />
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <MapPin size={20} color={isDark ? journalPalette.amber : journalPalette.leatherDark} />
                     <Box>
-                      <Typography variant="caption" color="text.secondary">River</Typography>
-                      <Typography variant="h6">{selectedEntry.streamName}</Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight, fontWeight: 500 }}
+                      >
+                        River
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        sx={{ color: isDark ? journalPalette.warmCream : journalPalette.leatherDeep }}
+                      >
+                        {selectedEntry.streamName}
+                      </Typography>
                     </Box>
                   </Box>
                 </Grid>
@@ -1095,19 +1105,36 @@ export default function JournalEntryList() {
                 {/* River Stretch */}
                 <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
                   {selectedEntry.riverStretch ? (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Navigation size={20} className="text-slate-400" />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                      <Navigation size={20} color={isDark ? journalPalette.amber : journalPalette.leatherDark} />
                       <Box>
-                        <Typography variant="caption" color="text.secondary">Stretch</Typography>
-                        <Typography variant="body1">{selectedEntry.riverStretch}</Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight, fontWeight: 500 }}
+                        >
+                          Stretch
+                        </Typography>
+                        <Typography
+                          variant="body1"
+                          sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack, fontWeight: 500 }}
+                        >
+                          {selectedEntry.riverStretch}
+                        </Typography>
                       </Box>
                     </Box>
                   ) : (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, opacity: 0.5 }}>
-                      <Navigation size={20} className="text-slate-400" />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, opacity: 0.6 }}>
+                      <Navigation size={20} color={isDark ? journalPalette.mutedTan : journalPalette.inkFaded} />
                       <Box>
-                        <Typography variant="caption" color="text.secondary">Stretch</Typography>
-                        <Typography variant="body2" color="text.secondary">Not specified</Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.inkFaded }}
+                        >
+                          Stretch
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.inkFaded }}>
+                          Not specified
+                        </Typography>
                       </Box>
                     </Box>
                   )}
@@ -1117,14 +1144,26 @@ export default function JournalEntryList() {
 
                 {/* Fishing Party */}
                 <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Users size={20} className="text-slate-400" />
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <Users size={20} color={isDark ? journalPalette.amber : journalPalette.leatherDark} />
                     <Box>
-                      <Typography variant="caption" color="text.secondary">Fishing Party</Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight, fontWeight: 500 }}
+                      >
+                        Fishing Party
+                      </Typography>
                       {selectedEntry.tripMembers ? (
-                        <Typography variant="body1">{selectedEntry.tripMembers}</Typography>
+                        <Typography
+                          variant="body1"
+                          sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack, fontWeight: 500 }}
+                        >
+                          {selectedEntry.tripMembers}
+                        </Typography>
                       ) : (
-                        <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.5 }}>Solo trip</Typography>
+                        <Typography variant="body2" sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.inkFaded, opacity: 0.7 }}>
+                          Solo trip
+                        </Typography>
                       )}
                     </Box>
                   </Box>
@@ -1134,11 +1173,19 @@ export default function JournalEntryList() {
 
                 {/* Catch Details Header */}
                 <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Fish size={20} className="text-slate-400" />
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <Fish size={20} color={isDark ? journalPalette.amber : journalPalette.leatherDark} />
                     <Box>
-                      <Typography variant="caption" color="text.secondary">Catch Details</Typography>
-                      <Typography variant="h6">
+                      <Typography
+                        variant="caption"
+                        sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight, fontWeight: 500 }}
+                      >
+                        Catch Details
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        sx={{ color: isDark ? journalPalette.warmCream : journalPalette.leatherDeep }}
+                      >
                         {selectedEntry.numberCaught || 0} fish
                       </Typography>
                     </Box>
@@ -1147,24 +1194,41 @@ export default function JournalEntryList() {
 
                 {/* Species Caught - Left Column */}
                 <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                  <Typography variant="caption" color="text.secondary">Species Caught</Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight, fontWeight: 500 }}
+                  >
+                    Species Caught
+                  </Typography>
                   {selectedEntry.fishSpecies ? (
                     <Stack spacing={0.5} sx={{ mt: 0.5 }}>
                       {selectedEntry.fishSpecies.split(',').map((species, idx) => (
                         <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <FishIcon species={species.trim()} size="sm" />
-                          <Typography variant="body1">{species.trim()}</Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack }}
+                          >
+                            {species.trim()}
+                          </Typography>
                         </Box>
                       ))}
                     </Stack>
                   ) : (
-                    <Typography variant="body1" sx={{ opacity: 0.5 }}>No species recorded</Typography>
+                    <Typography variant="body1" sx={{ opacity: 0.5, color: isDark ? journalPalette.mutedTan : journalPalette.inkFaded }}>
+                      No species recorded
+                    </Typography>
                   )}
                 </Grid>
 
                 {/* Bait Used - Right Column */}
                 <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                  <Typography variant="caption" color="text.secondary">Bait Used</Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight, fontWeight: 500 }}
+                  >
+                    Bait Used
+                  </Typography>
                   {selectedEntry.baitUsed ? (
                     <Stack spacing={0.5} sx={{ mt: 0.5 }}>
                       {selectedEntry.baitUsed.split(',').map((bait, idx) => (
@@ -1172,14 +1236,21 @@ export default function JournalEntryList() {
                           <LureIcon
                             bait={bait.trim()}
                             size="sm"
-                            fallback={<Anchor size={16} className="text-slate-400" />}
+                            fallback={<Anchor size={16} color={isDark ? journalPalette.mutedTan : journalPalette.inkFaded} />}
                           />
-                          <Typography variant="body1">{bait.trim()}</Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack }}
+                          >
+                            {bait.trim()}
+                          </Typography>
                         </Box>
                       ))}
                     </Stack>
                   ) : (
-                    <Typography variant="body1" sx={{ opacity: 0.5 }}>No bait recorded</Typography>
+                    <Typography variant="body1" sx={{ opacity: 0.5, color: isDark ? journalPalette.mutedTan : journalPalette.inkFaded }}>
+                      No bait recorded
+                    </Typography>
                   )}
                 </Grid>
 
@@ -1187,44 +1258,89 @@ export default function JournalEntryList() {
 
                 {/* Weather Conditions */}
                 <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Wind size={20} className="text-slate-400" />
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <Wind size={20} color={isDark ? journalPalette.amber : journalPalette.leatherDark} />
                     <Box>
-                      <Typography variant="caption" color="text.secondary">Weather</Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight, fontWeight: 500 }}
+                      >
+                        Weather
+                      </Typography>
                       {selectedEntry.weatherConditions && (
-                        <Typography variant="h6">{selectedEntry.weatherConditions}</Typography>
+                        <Typography
+                          variant="h6"
+                          sx={{ color: isDark ? journalPalette.warmCream : journalPalette.leatherDeep }}
+                        >
+                          {selectedEntry.weatherConditions}
+                        </Typography>
                       )}
                     </Box>
                   </Box>
                   <Stack spacing={0.5} sx={{ mt: 1 }}>
                     {(selectedEntry.airTempLow || selectedEntry.airTempHigh) && (
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="caption" color="text.secondary" sx={{ minWidth: 60 }}>Temp:</Typography>
-                        <Typography variant="body1">{selectedEntry.airTempLow}°F – {selectedEntry.airTempHigh}°F</Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{ minWidth: 60, color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight }}
+                        >
+                          Temp:
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack }}>
+                          {selectedEntry.airTempLow}°F – {selectedEntry.airTempHigh}°F
+                        </Typography>
                       </Box>
                     )}
                     {(selectedEntry.windVelocity || selectedEntry.windDirection) && (
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="caption" color="text.secondary" sx={{ minWidth: 60 }}>Wind:</Typography>
-                        <Typography variant="body1">{selectedEntry.windVelocity} mph {selectedEntry.windDirection}</Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{ minWidth: 60, color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight }}
+                        >
+                          Wind:
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack }}>
+                          {selectedEntry.windVelocity} mph {selectedEntry.windDirection}
+                        </Typography>
                       </Box>
                     )}
                     {selectedEntry.barometricPressure && (
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="caption" color="text.secondary" sx={{ minWidth: 60 }}>Pressure:</Typography>
-                        <Typography variant="body1">{selectedEntry.barometricPressure} inHg</Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{ minWidth: 60, color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight }}
+                        >
+                          Pressure:
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack }}>
+                          {selectedEntry.barometricPressure} inHg
+                        </Typography>
                       </Box>
                     )}
                     {selectedEntry.moonPhase && (
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="caption" color="text.secondary" sx={{ minWidth: 60 }}>Moon:</Typography>
-                        <Typography variant="body1">{selectedEntry.moonPhase}</Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{ minWidth: 60, color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight }}
+                        >
+                          Moon:
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack }}>
+                          {selectedEntry.moonPhase}
+                        </Typography>
                       </Box>
                     )}
                     {selectedEntry.precipitation && (
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="caption" color="text.secondary" sx={{ minWidth: 60 }}>Precip:</Typography>
-                        <Typography variant="body1">{selectedEntry.precipitation}"</Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{ minWidth: 60, color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight }}
+                        >
+                          Precip:
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack }}>
+                          {selectedEntry.precipitation}"
+                        </Typography>
                       </Box>
                     )}
                   </Stack>
@@ -1232,38 +1348,76 @@ export default function JournalEntryList() {
 
                 {/* Water Conditions */}
                 <Grid item xs={12} md={6} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Droplets size={20} className="text-slate-400" />
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <Droplets size={20} color={isDark ? journalPalette.amber : journalPalette.leatherDark} />
                     <Box>
-                      <Typography variant="caption" color="text.secondary">Water Conditions</Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight, fontWeight: 500 }}
+                      >
+                        Water Conditions
+                      </Typography>
                       {selectedEntry.waterClarity && (
-                        <Typography variant="h6">{selectedEntry.waterClarity}</Typography>
+                        <Typography
+                          variant="h6"
+                          sx={{ color: isDark ? journalPalette.warmCream : journalPalette.leatherDeep }}
+                        >
+                          {selectedEntry.waterClarity}
+                        </Typography>
                       )}
                     </Box>
                   </Box>
                   <Stack spacing={0.5} sx={{ mt: 1 }}>
                     {selectedEntry.flowRate && (
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>Flow Rate:</Typography>
-                        <Typography variant="body1">{selectedEntry.flowRate} cfs</Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{ whiteSpace: 'nowrap', color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight }}
+                        >
+                          Flow Rate:
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack }}>
+                          {selectedEntry.flowRate} cfs
+                        </Typography>
                       </Box>
                     )}
                     {selectedEntry.riverDepth && (
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>Depth:</Typography>
-                        <Typography variant="body1">{selectedEntry.riverDepth} ft</Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{ whiteSpace: 'nowrap', color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight }}
+                        >
+                          Depth:
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack }}>
+                          {selectedEntry.riverDepth} ft
+                        </Typography>
                       </Box>
                     )}
                     {selectedEntry.waterTemperature && (
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>Water Temp:</Typography>
-                        <Typography variant="body1">{selectedEntry.waterTemperature}°F</Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{ whiteSpace: 'nowrap', color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight }}
+                        >
+                          Water Temp:
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack }}>
+                          {selectedEntry.waterTemperature}°F
+                        </Typography>
                       </Box>
                     )}
                     {selectedEntry.usgsGauge && (
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>USGS Gauge:</Typography>
-                        <Typography variant="body1">{selectedEntry.usgsGauge}</Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{ whiteSpace: 'nowrap', color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight }}
+                        >
+                          USGS Gauge:
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: isDark ? journalPalette.warmCream : journalPalette.inkBlack }}>
+                          {selectedEntry.usgsGauge}
+                        </Typography>
                       </Box>
                     )}
                   </Stack>
@@ -1274,13 +1428,22 @@ export default function JournalEntryList() {
                   <>
                     <Grid item xs={12}><Divider /></Grid>
                     <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-                        <FileText size={20} className="text-slate-400" style={{ marginTop: 2 }} />
+                      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                        <FileText size={20} color={isDark ? journalPalette.amber : journalPalette.leatherDark} style={{ marginTop: 2 }} />
                         <Box>
-                          <Typography variant="caption" color="text.secondary">Notes</Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight, fontWeight: 500 }}
+                          >
+                            Notes
+                          </Typography>
                           <Stack spacing={1} sx={{ mt: 0.5 }}>
                             {formatNotes(selectedEntry.notes).map((paragraph, idx) => (
-                              <Typography key={idx} variant="body1" sx={{ lineHeight: 1.6 }}>
+                              <Typography
+                                key={idx}
+                                variant="body1"
+                                sx={{ lineHeight: 1.6, color: isDark ? journalPalette.warmCream : journalPalette.inkBlack }}
+                              >
                                 {paragraph}
                               </Typography>
                             ))}
@@ -1296,9 +1459,12 @@ export default function JournalEntryList() {
                   <>
                     <Grid item xs={12}><Divider /></Grid>
                     <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                        <Camera size={20} className="text-slate-400" />
-                        <Typography variant="caption" color="text.secondary">
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                        <Camera size={20} color={isDark ? journalPalette.amber : journalPalette.leatherDark} />
+                        <Typography
+                          variant="caption"
+                          sx={{ color: isDark ? journalPalette.mutedTan : journalPalette.leatherLight, fontWeight: 500 }}
+                        >
                           Photos ({selectedEntry.pictures.length})
                         </Typography>
                       </Box>
