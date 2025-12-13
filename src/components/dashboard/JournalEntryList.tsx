@@ -391,10 +391,28 @@ export default function JournalEntryList() {
       ) : (
         <>
           <Box sx={{ position: 'relative' }}>
-            <WaterCausticsBackground isDark={isDark} />
-            <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, position: 'relative', bgcolor: 'transparent' }}>
+            <TableContainer
+              component={Paper}
+              elevation={0}
+              sx={{
+                border: `2px solid ${journalPalette.leatherLight}`,
+                borderRadius: 2,
+                position: 'relative',
+                backgroundImage: 'url(/textures/paper-cream.webp)',
+                backgroundRepeat: 'repeat',
+                backgroundSize: '512px 512px',
+              }}
+            >
               <Table sx={{ minWidth: 1000 }} aria-label="journal entries table">
-                <TableHead sx={{ bgcolor: isDark ? 'rgba(30, 41, 59, 0.8)' : 'rgba(241, 245, 249, 0.9)' }}>
+                <TableHead sx={{
+                  bgcolor: isDark
+                    ? 'rgba(42, 31, 26, 0.8)'
+                    : `rgba(139, 107, 74, 0.15)`,
+                  '& .MuiTableCell-head': {
+                    fontFamily: '"Special Elite", "Courier New", monospace',
+                    color: journalPalette.leatherDeep,
+                  },
+                }}>
                   <TableRow>
                     <TableCell sx={{ width: 40, p: 1 }}></TableCell>
                     <TableCell onClick={handleSortToggle} sx={{ cursor: 'pointer', userSelect: 'none' }}>
@@ -432,14 +450,14 @@ export default function JournalEntryList() {
                         animate="visible"
                         exit="exit"
                         whileHover={prefersReducedMotion ? {} : {
-                          y: -4,
-                          scale: 1.01,
-                          boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
+                          y: -2,
+                          scale: 1.005,
+                          boxShadow: `0 4px 16px rgba(92, 64, 51, 0.2)`,
                           transition: { duration: 0.2 }
                         }}
                         style={{
                           cursor: 'pointer',
-                          backgroundColor: isDark ? 'rgba(30, 41, 59, 0.6)' : 'rgba(255, 255, 255, 0.8)',
+                          backgroundColor: isDark ? 'rgba(45, 37, 32, 0.8)' : 'rgba(250, 248, 243, 0.9)',
                         }}
                       >
                         <TableCell sx={{ p: 1, width: 40 }}>
@@ -583,9 +601,8 @@ export default function JournalEntryList() {
                             colSpan={9}
                             sx={{
                               py: 0,
-                              borderBottom: isExpanded ? '1px solid' : 'none',
-                              borderColor: 'divider',
-                              bgcolor: isDark ? 'rgba(30, 41, 59, 0.3)' : 'rgba(241, 245, 249, 0.5)',
+                              borderBottom: isExpanded ? `1px solid ${journalPalette.lineRule}` : 'none',
+                              bgcolor: isDark ? 'rgba(45, 37, 32, 0.5)' : 'rgba(245, 240, 230, 0.7)',
                             }}
                           >
                             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
