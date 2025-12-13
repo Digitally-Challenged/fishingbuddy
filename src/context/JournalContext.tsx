@@ -29,7 +29,7 @@ type JournalAction =
 const initialState: JournalState = {
   entries: storageUtils.loadEntries(),
   error: null,
-  darkMode: storageUtils.loadDarkMode() ?? true,
+  darkMode: storageUtils.loadDarkMode() ?? false,
   pageFlipStyle: (localStorage.getItem('pageFlipStyle') as PageFlipStyle) || '3d',
 };
 
