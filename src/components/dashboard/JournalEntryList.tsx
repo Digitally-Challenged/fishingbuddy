@@ -29,11 +29,14 @@ import {
   Collapse,
   Autocomplete,
   Snackbar,
-  Alert
+  Alert,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar
 } from '@mui/material';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { keyframes } from '@mui/material';
-import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, ArrowUpDown, Users, Navigation, ChevronDown, ChevronLeft, ChevronRight, Edit2, Save } from 'lucide-react';
+import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, ArrowUpDown, Users, Navigation, ChevronDown, ChevronLeft, ChevronRight, Edit2, Save, Camera } from 'lucide-react';
 import { FormData } from '../../types';
 import { useJournal } from '../../context/JournalContext';
 import { journalPalette } from '../../theme/journalTheme';
@@ -161,6 +164,8 @@ export default function JournalEntryList() {
   });
   const [navDirection, setNavDirection] = useState<'next' | 'prev' | null>(null);
   const [isFlipping, setIsFlipping] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxPhoto, setLightboxPhoto] = useState<{ url: string; caption: string } | null>(null);
   const isDark = theme.palette.mode === 'dark';
 
   // Validation for edit form
@@ -722,7 +727,7 @@ export default function JournalEntryList() {
       {/* Entry Detail Modal */}
       <Dialog
         open={!!selectedEntry}
-        onClose={() => { setSelectedEntry(null); setIsEditing(false); setEditFormData(null); }}
+        onClose={() => { setSelectedEntry(null); setIsEditing(false); setEditFormData(null); setLightboxOpen(false); setLightboxPhoto(null); }}
         maxWidth="md"
         fullWidth
         TransitionProps={{
@@ -850,7 +855,7 @@ export default function JournalEntryList() {
                     </IconButton>
                   </Tooltip>
                 )}
-                <IconButton onClick={() => { setSelectedEntry(null); setIsEditing(false); setEditFormData(null); }} size="small">
+                <IconButton onClick={() => { setSelectedEntry(null); setIsEditing(false); setEditFormData(null); setLightboxOpen(false); setLightboxPhoto(null); }} size="small">
                   <X size={20} />
                 </IconButton>
               </Box>
@@ -1264,6 +1269,68 @@ export default function JournalEntryList() {
                     </Grid>
                   </>
                 )}
+
+                {/* Photos */}
+                {selectedEntry.pictures && selectedEntry.pictures.length > 0 && (
+                  <>
+                    <Grid item xs={12}><Divider /></Grid>
+                    <Grid item xs={12} component={motion.div} variants={prefersReducedMotion ? {} : modalItemVariants}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                        <Camera size={20} className="text-slate-400" />
+                        <Typography variant="caption" color="text.secondary">
+                          Photos ({selectedEntry.pictures.length})
+                        </Typography>
+                      </Box>
+                      <ImageList
+                        sx={{
+                          width: '100%',
+                          maxHeight: 400,
+                          borderRadius: 2,
+                          overflow: 'hidden'
+                        }}
+                        cols={selectedEntry.pictures.length === 1 ? 1 : selectedEntry.pictures.length === 2 ? 2 : 3}
+                        rowHeight={200}
+                      >
+                        {selectedEntry.pictures.map((picture) => (
+                          <ImageListItem
+                            key={picture.id}
+                            sx={{
+                              cursor: 'pointer',
+                              '&:hover': { opacity: 0.9 }
+                            }}
+                            onClick={() => {
+                              setLightboxPhoto({ url: picture.url, caption: picture.caption });
+                              setLightboxOpen(true);
+                            }}
+                          >
+                            <img
+                              src={picture.url}
+                              alt={picture.caption || 'Fishing trip photo'}
+                              loading="lazy"
+                              style={{
+                                objectFit: 'cover',
+                                height: '100%',
+                                width: '100%',
+                                borderRadius: 4
+                              }}
+                            />
+                            {picture.caption && (
+                              <ImageListItemBar
+                                title={picture.caption}
+                                sx={{
+                                  background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)',
+                                  '& .MuiImageListItemBar-title': {
+                                    fontSize: '0.75rem'
+                                  }
+                                }}
+                              />
+                            )}
+                          </ImageListItem>
+                        ))}
+                      </ImageList>
+                    </Grid>
+                  </>
+                )}
               </Grid>
               </MotionBox>
               )}
@@ -1277,11 +1344,69 @@ export default function JournalEntryList() {
                   </Button>
                 </>
               ) : (
-                <Button onClick={() => { setSelectedEntry(null); setIsEditing(false); }}>Close</Button>
+                <Button onClick={() => { setSelectedEntry(null); setIsEditing(false); setLightboxOpen(false); setLightboxPhoto(null); }}>Close</Button>
               )}
             </DialogActions>
           </>
         )}
+      </Dialog>
+
+      {/* Photo Lightbox */}
+      <Dialog
+        open={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        maxWidth="lg"
+        fullWidth
+        PaperProps={{
+          sx: {
+            bgcolor: 'transparent',
+            boxShadow: 'none',
+            overflow: 'visible'
+          }
+        }}
+      >
+        <Box sx={{ position: 'relative' }}>
+          <IconButton
+            onClick={() => setLightboxOpen(false)}
+            sx={{
+              position: 'absolute',
+              top: -40,
+              right: 0,
+              color: 'white',
+              bgcolor: 'rgba(0,0,0,0.5)',
+              '&:hover': { bgcolor: 'rgba(0,0,0,0.7)' }
+            }}
+          >
+            <X size={24} />
+          </IconButton>
+          {lightboxPhoto && (
+            <Box>
+              <img
+                src={lightboxPhoto.url}
+                alt={lightboxPhoto.caption || 'Fishing trip photo'}
+                style={{
+                  width: '100%',
+                  maxHeight: '80vh',
+                  objectFit: 'contain',
+                  borderRadius: 8
+                }}
+              />
+              {lightboxPhoto.caption && (
+                <Typography
+                  variant="body1"
+                  sx={{
+                    textAlign: 'center',
+                    color: 'white',
+                    mt: 2,
+                    textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                  }}
+                >
+                  {lightboxPhoto.caption}
+                </Typography>
+              )}
+            </Box>
+          )}
+        </Box>
       </Dialog>
 
       {/* Success Snackbar */}
