@@ -7,8 +7,7 @@ import { Plus, X } from 'lucide-react';
 import FishingJournalForm from './components/WizardForm';
 import Dashboard from './components/Dashboard';
 import Layout from './components/layout/Layout';
-import { modernTheme } from './theme/modernTheme';
-import { darkThemeOverrides } from './theme/baseTheme';
+import { journalTheme, journalDarkOverrides } from './theme/journalTheme';
 import { JournalProvider, useJournal } from './context/JournalContext';
 
 function AppContent() {
@@ -17,7 +16,7 @@ function AppContent() {
 
   const theme = useMemo(
     () =>
-      createTheme(modernTheme, darkMode ? darkThemeOverrides : {}),
+      createTheme(journalTheme, darkMode ? journalDarkOverrides : {}),
     [darkMode]
   );
 
