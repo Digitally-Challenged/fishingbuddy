@@ -17,7 +17,6 @@ function AppContent() {
 
   const theme = useMemo(
     () =>
-      // Pass arguments separately to createTheme for deep merging
       createTheme(modernTheme, darkMode ? darkThemeOverrides : {}),
     [darkMode]
   );
@@ -25,7 +24,6 @@ function AppContent() {
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleNavigate = (tab: number) => {
-    // If user clicks "New Entry" (index 1), open modal instead of changing tab
     if (tab === 1) {
       setOpenNewEntry(true);
     }
@@ -39,9 +37,8 @@ function AppContent() {
           <Dashboard />
         </Container>
 
-        {/* Floating Action Button for New Entry */}
-        <Fab 
-          color="primary" 
+        <Fab
+          color="primary"
           aria-label="add entry"
           onClick={() => setOpenNewEntry(true)}
           sx={{
@@ -55,7 +52,6 @@ function AppContent() {
           <Plus size={24} />
         </Fab>
 
-        {/* New Entry Modal */}
         <Dialog
           open={openNewEntry}
           onClose={() => setOpenNewEntry(false)}

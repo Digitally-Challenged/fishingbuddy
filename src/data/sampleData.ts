@@ -8,6 +8,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '1994-10-07',
     streamName: 'Spring River',
+    riverStretch: 'Spring River Oaks to Many Islands',
+    tripMembers: 'Westfall, Teal, Mr. Scott, Manis',
     windVelocity: '14',
     windDirection: 'S',
     weatherConditions: 'Cloudy',
@@ -31,6 +33,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '1998-10-09',
     streamName: 'Spring River',
+    riverStretch: 'Spring River Valley Campground upriver',
+    tripMembers: 'Boodrow',
     windVelocity: '5',
     windDirection: 'E',
     weatherConditions: '',
@@ -54,6 +58,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '1998-10-11',
     streamName: 'Spring River',
+    riverStretch: 'Many Islands to SRV',
+    tripMembers: 'Boodrow',
     windVelocity: '5',
     windDirection: 'E',
     weatherConditions: 'Sunny',
@@ -77,6 +83,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2002-02-15',
     streamName: 'Spring River',
+    riverStretch: 'Hardy Low Water Bridge to Trophy Hole',
+    tripMembers: 'Teal',
     windVelocity: '8',
     windDirection: 'W',
     weatherConditions: '',
@@ -100,6 +108,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2002-02-16',
     streamName: 'Spring River',
+    riverStretch: 'Turnover Shoal area',
+    tripMembers: 'Teal, Tim Scott',
     windVelocity: '10',
     windDirection: 'W',
     weatherConditions: '',
@@ -123,6 +133,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2005-02-19',
     streamName: 'Spring River',
+    riverStretch: 'SRV to Trophy Hole',
+    tripMembers: 'Mr. Scott',
     windVelocity: '9',
     windDirection: 'SE',
     weatherConditions: 'Cloudy',
@@ -146,6 +158,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2005-02-20',
     streamName: 'Spring River',
+    riverStretch: 'HB Alexander upriver and down',
+    tripMembers: 'Tim Scott',
     windVelocity: '15',
     windDirection: 'S',
     weatherConditions: 'Sunny',
@@ -169,6 +183,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2005-02-21',
     streamName: 'Spring River',
+    riverStretch: 'SRV Low Water Bridge to Turnover Shoal',
+    tripMembers: 'Mr. Scott',
     windVelocity: '7',
     windDirection: 'N',
     weatherConditions: 'Stormy',
@@ -192,6 +208,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2007-11-11',
     streamName: 'Spring River',
+    riverStretch: 'SRV to Trophy Hole',
+    tripMembers: 'Yvonne',
     windVelocity: '13',
     windDirection: 'S',
     weatherConditions: 'Sunny',
@@ -215,6 +233,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2007-11-12',
     streamName: 'Spring River',
+    riverStretch: 'Fern Taylor Camp to Trophy Hole',
+    tripMembers: 'Yvonne',
     windVelocity: '10',
     windDirection: 'S',
     weatherConditions: 'Stormy',
@@ -238,6 +258,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2010-09-20',
     streamName: 'Spring River',
+    riverStretch: 'Hardy Low Water Bridge to Trophy Hole',
+    tripMembers: 'James, Tim Scott',
     windVelocity: '6',
     windDirection: 'E',
     weatherConditions: 'Sunny',
@@ -261,6 +283,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2010-09-21',
     streamName: 'Spring River',
+    riverStretch: 'Riverside to Fern Taylor Camp',
+    tripMembers: 'James, Tim Scott',
     windVelocity: '11',
     windDirection: 'S',
     weatherConditions: 'Sunny',
@@ -284,6 +308,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2011-06-24',
     streamName: 'Spring River',
+    riverStretch: 'SRV Campground to Walleye Shoal',
+    tripMembers: 'WC',
     windVelocity: '7',
     windDirection: 'S',
     weatherConditions: 'Stormy',
@@ -307,6 +333,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2011-06-25',
     streamName: 'Spring River',
+    riverStretch: 'Fern Taylor Camp upriver',
+    tripMembers: 'WC',
     windVelocity: '13',
     windDirection: 'S',
     weatherConditions: '',
@@ -330,6 +358,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2011-06-26',
     streamName: 'Spring River',
+    riverStretch: 'Fern Taylor Camp to Disaster Falls',
+    tripMembers: 'WC',
     windVelocity: '11',
     windDirection: 'S',
     weatherConditions: '',
@@ -353,6 +383,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2011-10-10',
     streamName: 'Spring River',
+    riverStretch: 'Fern Taylor Camp area',
+    tripMembers: 'Clint',
     windVelocity: '7',
     windDirection: 'SE',
     weatherConditions: 'Sunny',
@@ -376,6 +408,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2011-10-11',
     streamName: 'Spring River',
+    riverStretch: 'Hardy Beach to Harold B. Alexander',
+    tripMembers: 'Thomason, Williams, Lockwood, Mr. Scott, Sig',
     windVelocity: '4',
     windDirection: 'SE',
     weatherConditions: 'Windy',
@@ -399,6 +433,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2012-10-08',
     streamName: 'Spring River',
+    riverStretch: 'SRV to Fern Taylor Camp',
+    tripMembers: 'Tim Scott',
     windVelocity: '6',
     windDirection: 'SW',
     weatherConditions: '',
@@ -422,6 +458,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2012-10-09',
     streamName: 'Spring River',
+    riverStretch: 'Ed Mullins Ramp to Harold B. Alexander',
+    tripMembers: 'Tim Scott',
     windVelocity: '8',
     windDirection: 'S',
     weatherConditions: '',
@@ -445,6 +483,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2012-10-10',
     streamName: 'Spring River',
+    riverStretch: 'Ed Mullins Ramp to Harold B. Alexander',
+    tripMembers: 'Tim Scott',
     windVelocity: '10',
     windDirection: 'N',
     weatherConditions: '',
@@ -468,6 +508,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2014-02-16',
     streamName: 'Spring River',
+    riverStretch: 'Hardy Beach to Harold B. Alexander',
+    tripMembers: 'Tim Scott, JL, Josh',
     windVelocity: '9',
     windDirection: 'NE',
     weatherConditions: 'Cloudy',
@@ -491,6 +533,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2014-02-17',
     streamName: 'Spring River',
+    riverStretch: 'SRV to Walleye Hole',
+    tripMembers: 'Tim Scott, JL, Josh',
     windVelocity: '14',
     windDirection: 'W',
     weatherConditions: '',
@@ -514,6 +558,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2014-02-18',
     streamName: 'Spring River',
+    riverStretch: 'Rio Vista to Hardy Beach',
+    tripMembers: 'Tim Scott, JL, Josh',
     windVelocity: '10',
     windDirection: 'S',
     weatherConditions: '',
@@ -537,6 +583,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2018-10-05',
     streamName: 'Spring River',
+    riverStretch: 'Saddler Falls to Walleye Shoal',
+    tripMembers: 'WC',
     windVelocity: '9',
     windDirection: 'S',
     weatherConditions: 'Sunny',
@@ -560,6 +608,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2018-10-06',
     streamName: 'Spring River',
+    riverStretch: 'Rio Vista area to Harold B. Alexander',
+    tripMembers: 'WC, sons, Mr. Scott',
     windVelocity: '9',
     windDirection: 'S',
     weatherConditions: '',
@@ -583,6 +633,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2019-05-25',
     streamName: 'Spring River',
+    riverStretch: 'Rio Vista area',
+    tripMembers: '',
     windVelocity: '10',
     windDirection: 'S',
     weatherConditions: '',
@@ -606,6 +658,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2021-11-13',
     streamName: 'Spring River',
+    riverStretch: 'Rio Vista area',
+    tripMembers: 'Mr. Scott',
     windVelocity: '8',
     windDirection: 'W',
     weatherConditions: 'Windy',
@@ -629,6 +683,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2021-11-14',
     streamName: 'Eleven Point River',
+    riverStretch: 'Hwy 92 Bridge to Birdell (Hwy 62)',
+    tripMembers: 'Mr. Scott',
     windVelocity: '11',
     windDirection: 'W',
     weatherConditions: 'Cloudy',
@@ -652,6 +708,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2021-11-15',
     streamName: 'Spring River',
+    riverStretch: 'Mullen to Harold B. Alexander',
+    tripMembers: 'Mr. Scott',
     windVelocity: '9',
     windDirection: 'S',
     weatherConditions: '',
@@ -675,6 +733,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2022-10-28',
     streamName: 'Spring River',
+    riverStretch: 'Harold B. Alexander to Ravenden',
+    tripMembers: 'Mr. Scott, WC, SR',
     windVelocity: '8',
     windDirection: 'NE',
     weatherConditions: 'Sunny',
@@ -698,6 +758,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2023-04-17',
     streamName: 'Spring River',
+    riverStretch: 'Ed Mullins Ramp to Harold B. Alexander',
+    tripMembers: 'Mr. Scott',
     windVelocity: '10',
     windDirection: 'W',
     weatherConditions: '',
@@ -721,6 +783,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2023-04-18',
     streamName: 'Spring River',
+    riverStretch: 'Rio Vista area',
+    tripMembers: 'Mr. Scott',
     windVelocity: '12',
     windDirection: 'S',
     weatherConditions: '',
@@ -744,6 +808,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2023-10-17',
     streamName: 'Spring River',
+    riverStretch: 'Twelve mile float',
+    tripMembers: 'Mr. Scott',
     windVelocity: '6',
     windDirection: 'W',
     weatherConditions: 'Sunny',
@@ -767,6 +833,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2023-10-18',
     streamName: 'Spring River',
+    riverStretch: 'Continuation from previous day',
+    tripMembers: 'Mr. Scott',
     windVelocity: '10',
     windDirection: 'S',
     weatherConditions: 'Windy',
@@ -790,6 +858,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2023-11-04',
     streamName: 'Spring River',
+    riverStretch: 'Ravenden to Imboden',
+    tripMembers: 'Mr. Scott, WC, Shelby Rowland',
     windVelocity: '8',
     windDirection: 'W',
     weatherConditions: '',
@@ -813,6 +883,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2024-03-16',
     streamName: 'Spring River',
+    riverStretch: 'Ravenden to Imboden',
+    tripMembers: 'WC, Shelby Rowland',
     windVelocity: '7',
     windDirection: 'W',
     weatherConditions: '',
@@ -836,6 +908,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2025-03-22',
     streamName: 'Spring River',
+    riverStretch: 'Hardy Beach to Harold B. Alexander',
+    tripMembers: 'WC, Shelby Rowland, Chase Willingham',
     windVelocity: '12',
     windDirection: 'SE',
     weatherConditions: '',
@@ -859,6 +933,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2025-11-07',
     streamName: 'Spring River',
+    riverStretch: 'Ravenden to Imboden',
+    tripMembers: 'Mr. Scott',
     windVelocity: '10',
     windDirection: 'W',
     weatherConditions: 'Sunny',
@@ -882,6 +958,8 @@ export const sampleEntries: FormData[] = [
 {
     date: '2025-11-08',
     streamName: 'Eleven Point River',
+    riverStretch: 'Dalton to Highway 90 Bridge',
+    tripMembers: 'Mr. Scott',
     windVelocity: '14',
     windDirection: 'NW',
     weatherConditions: 'Sunny',

@@ -22,6 +22,7 @@ This is a **React + TypeScript + Vite** fishing journal application focused on A
 - **Tailwind CSS** for utility styling
 - **dayjs** for date handling
 - **xlsx** for Excel export functionality
+- **lucide-react** for icons
 
 ### State Management
 
@@ -42,7 +43,10 @@ The `JournalContext` provides:
 src/
 ├── components/
 │   ├── Dashboard.tsx              # Main dashboard view
-│   ├── FishingJournalForm.tsx     # Entry creation form
+│   ├── FishingJournalForm.tsx     # Entry creation form (single-page)
+│   ├── WizardForm.tsx             # Multi-step wizard form (mobile-friendly)
+│   ├── FishIcon.tsx               # Fish species icon component
+│   ├── LureIcon.tsx               # Lure/bait icon component
 │   ├── dashboard/                 # Dashboard sub-components
 │   │   ├── JournalEntryList.tsx
 │   │   ├── JournalStats.tsx
@@ -60,33 +64,59 @@ src/
 │       ├── WifesMoodSection.tsx
 │       ├── NotesSection.tsx
 │       └── PictureUpload.tsx
+├── constants/
+│   └── moodOptions.ts             # Mood selection options
 ├── data/                          # Static data and constants
 │   ├── arkansasStreams.ts         # List of AR waterways
 │   ├── fishSpecies.ts             # Fish species by category
 │   ├── usgsStations.ts            # USGS gauge station data
-│   └── sampleData.ts              # Demo/sample entries
+│   └── sampleData.ts              # Demo/sample entries (with "Old Hand" voice)
 ├── utils/
 │   ├── storage.ts                 # localStorage operations
 │   ├── usgsUtils.ts               # USGS station lookup/matching
-│   └── excelUtils.ts              # Excel export helpers
-└── types/
-    └── index.ts                   # TypeScript interfaces
+│   ├── excelUtils.ts              # Excel export helpers
+│   └── fishIcons.ts               # Fish/lure icon path utilities
+├── types/
+│   ├── index.ts                   # Main TypeScript interfaces (FormData)
+│   ├── types.ts                   # Additional type definitions
+│   └── diary.ts                   # DiaryEntry interface for parsed entries
+└── theme/
+    ├── baseTheme.ts               # Base MUI theme configuration
+    └── modernTheme.ts             # Modern theme variant
 ```
 
 ### Key Data Types
 
-The `FormData` interface in `src/types/index.ts` defines the journal entry schema with fields for:
+**FormData** (`src/types/index.ts`) - Journal entry schema:
 - Date and stream location
 - Weather conditions (wind, sky)
 - Water conditions (clarity, temperature, flow via USGS)
 - Catch details (species, count, bait)
 - Photos and notes
 
+**DiaryEntry** (`src/types/diary.ts`) - Parsed diary format for imported entries:
+- Original text with extracted structured data
+- Support for multi-day trips
+- Flexible details (weather, water, lures, species caught)
+
+### Icon System
+
+The app uses optimized WebP/PNG icons for fish species and lures:
+
+- **Location**: `public/icons/{sm,md,lg}/` (24px, 40px, 64px sizes)
+- **Utilities**: `src/utils/fishIcons.ts` provides `getFishIconPath()` and `getLureIconPath()`
+- **Components**: `FishIcon.tsx` and `LureIcon.tsx` render icons with fallbacks
+
+Icon mapping supports:
+- Fish species (largemouth bass, crappie, catfish, etc.)
+- Lure types with keyword matching (crankbaits, jigs, soft plastics, etc.)
+- Color variants for specific lures (cotton candy centipede, green pumpkin jig, etc.)
+
 ### Theme System
 
-MUI theming is configured in `src/theme/baseTheme.ts`:
-- Light/dark mode support with smooth transitions
-- Custom color palette with blue primary
+MUI theming is configured in `src/theme/`:
+- `baseTheme.ts` - Light/dark mode with smooth transitions, blue primary palette
+- `modernTheme.ts` - Modern design variant
 - Default form component variants
 
 ### Data Sources
@@ -94,6 +124,7 @@ MUI theming is configured in `src/theme/baseTheme.ts`:
 - **Arkansas Streams**: Comprehensive list in `src/data/arkansasStreams.ts`
 - **USGS Stations**: Water gauge data in `src/data/usgsStations.ts` with utilities in `usgsUtils.ts` for matching stations to streams
 - **Fish Species**: Categorized list (game fish, panfish, catfish, rough fish) in `src/data/fishSpecies.ts`
+- **Sample Data**: Demo entries in `src/data/sampleData.ts` written in "Old Hand" fishing diary voice
 
 ### Storage
 

@@ -56,6 +56,26 @@ export default function RequiredInfoSection({ formData, errors, handleChange }: 
           ))}
         </TextField>
       </Grid>
+      <Grid item xs={12} md={6}>
+        <TextField
+          label="River Stretch"
+          name="riverStretch"
+          value={formData.riverStretch}
+          onChange={handleChange}
+          placeholder="e.g., Ravenden to Imboden"
+          fullWidth
+        />
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <TextField
+          label="Fishing Party"
+          name="tripMembers"
+          value={formData.tripMembers}
+          onChange={handleChange}
+          placeholder="e.g., Mr. Scott, WC, Shelby Rowland"
+          fullWidth
+        />
+      </Grid>
     </Grid>
   );
 }

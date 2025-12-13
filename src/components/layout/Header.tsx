@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { AppBar, Toolbar, Typography, Box, Container, IconButton, Button, Stack, alpha } from '@mui/material';
-import { Fish, Menu, ExternalLink } from 'lucide-react';
+import { AppBar, Toolbar, Typography, Box, Container, IconButton, Button, Stack, alpha, Tooltip } from '@mui/material';
+import { Fish, Menu, ExternalLink, Sun, Moon } from 'lucide-react';
 import MobileMenu from './MobileMenu';
 import { useJournal } from '../../context/JournalContext';
 
@@ -10,8 +10,7 @@ interface HeaderProps {
 
 export default function Header({ onNavigate }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { state: { darkMode }, toggleDarkMode } = useJournal(); // Keep for logic, but maybe hide toggle for now if theme is fixed
+  const { state: { darkMode }, toggleDarkMode } = useJournal();
 
   const handleMenuOpen = () => {
     setMobileMenuOpen(true);
@@ -73,6 +72,18 @@ export default function Header({ onNavigate }: HeaderProps) {
             <Box sx={{ flexGrow: 1 }} />
 
             <Stack direction="row" spacing={1} sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+              <Tooltip title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}>
+                <IconButton 
+                  onClick={toggleDarkMode} 
+                  color="inherit"
+                  sx={{ 
+                    borderRadius: '12px',
+                    mr: 1
+                  }}
+                >
+                  {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                </IconButton>
+              </Tooltip>
               <Button
                 component="a"
                 href="https://waterdata.usgs.gov/nwis/rt"

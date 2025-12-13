@@ -1,6 +1,8 @@
 export interface FormData {
   date: string;
   streamName: string;
+  riverStretch: string; // e.g., "Ravenden to Imboden"
+  tripMembers: string; // e.g., "Mr. Scott, WC, Shelby Rowland"
   windVelocity: string;
   windDirection: string;
   weatherConditions: string;

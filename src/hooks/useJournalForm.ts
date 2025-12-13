@@ -5,6 +5,8 @@ import { useJournal } from '../context/JournalContext';
 const initialFormData: FormData = {
   date: '',
   streamName: '',
+  riverStretch: '',
+  tripMembers: '',
   windVelocity: '',
   windDirection: '',
   weatherConditions: '',
@@ -19,6 +21,11 @@ const initialFormData: FormData = {
   notes: '',
   pictures: [],
   wifesMood: '',
+  airTempHigh: '',
+  airTempLow: '',
+  barometricPressure: '',
+  moonPhase: '',
+  precipitation: '',
 };
 
 export function useJournalForm() {

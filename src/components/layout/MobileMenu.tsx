@@ -8,7 +8,8 @@ import {
   Box,
   Divider,
 } from '@mui/material';
-import { BarChart, PlusCircle, Droplets, Cloud } from 'lucide-react';
+import { BarChart, PlusCircle, Droplets, Cloud, Sun, Moon } from 'lucide-react';
+import { useJournal } from '../../context/JournalContext';
 
 interface MobileMenuProps {
   open: boolean;
@@ -17,9 +18,16 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ open, onClose, onNavigate }: MobileMenuProps) {
+  const { state: { darkMode }, toggleDarkMode } = useJournal();
+
   const handleNavigation = (tab: number) => {
     onNavigate(tab);
     onClose();
+  };
+
+  const handleDarkModeToggle = () => {
+    toggleDarkMode();
+    // Don't close menu so user can see the change immediately
   };
 
   return (
@@ -37,6 +45,13 @@ export default function MobileMenu({ open, onClose, onNavigate }: MobileMenuProp
               <PlusCircle size={24} />
             </ListItemIcon>
             <ListItemText primary="New Entry" />
+          </ListItem>
+          
+          <ListItem button onClick={handleDarkModeToggle}>
+            <ListItemIcon>
+              {darkMode ? <Sun size={24} /> : <Moon size={24} />}
+            </ListItemIcon>
+            <ListItemText primary={darkMode ? "Light Mode" : "Dark Mode"} />
           </ListItem>
         </List>
         
