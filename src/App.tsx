@@ -3,7 +3,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Container, CssBaseline, Fab, Dialog, DialogContent, Box, IconButton, useMediaQuery, alpha } from '@mui/material';
-import { Plus, X } from 'lucide-react';
+import { Feather, X } from 'lucide-react';
 import FishingJournalForm from './components/WizardForm';
 import Dashboard from './components/Dashboard';
 import Layout from './components/layout/Layout';
@@ -55,10 +55,20 @@ function AppContent() {
             bottom: 32,
             right: 32,
             boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-            zIndex: 1000
+            zIndex: 1000,
+            transition: 'all 0.3s ease',
+            '& svg': {
+              transition: 'transform 0.3s ease',
+            },
+            '&:hover': {
+              transform: 'scale(1.1)',
+              '& svg': {
+                transform: 'rotate(-15deg)',
+              },
+            },
           }}
         >
-          <Plus size={24} />
+          <Feather size={24} />
         </Fab>
 
         <Dialog
