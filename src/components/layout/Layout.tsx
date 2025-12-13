@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Box } from '@mui/material';
 import Header from './Header';
 import Footer from './Footer';
+import { journalPalette } from '../../theme/journalTheme';
 
 interface LayoutProps {
   children: ReactNode;
@@ -15,6 +16,13 @@ export default function Layout({ children, onNavigate }: LayoutProps) {
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',
+        // Subtle leather frame on edges
+        borderLeft: { xs: 'none', md: `8px solid ${journalPalette.leatherDark}` },
+        borderRight: { xs: 'none', md: `8px solid ${journalPalette.leatherDark}` },
+        boxShadow: {
+          xs: 'none',
+          md: `inset 4px 0 8px -4px rgba(61, 43, 31, 0.3), inset -4px 0 8px -4px rgba(61, 43, 31, 0.3)`,
+        },
       }}
     >
       <Header onNavigate={onNavigate} />
