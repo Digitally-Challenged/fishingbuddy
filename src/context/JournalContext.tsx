@@ -55,7 +55,7 @@ function journalReducer(state: JournalState, action: JournalAction): JournalStat
           error: null,
         };
         break;
-      case 'UPDATE_ENTRY':
+      case 'UPDATE_ENTRY': {
         const updatedEntries = [...state.entries];
         updatedEntries[action.payload.index] = action.payload.entry;
         newState = {
@@ -64,6 +64,7 @@ function journalReducer(state: JournalState, action: JournalAction): JournalStat
           error: null,
         };
         break;
+      }
       case 'DELETE_ENTRY':
         newState = {
           ...state,
@@ -104,13 +105,14 @@ function journalReducer(state: JournalState, action: JournalAction): JournalStat
         };
         storageUtils.saveDarkMode(newState.darkMode);
         return newState;
-      case 'TOGGLE_PAGE_FLIP_STYLE':
+      case 'TOGGLE_PAGE_FLIP_STYLE': {
         const newStyle = state.pageFlipStyle === '3d' ? 'classic' : '3d';
         localStorage.setItem('pageFlipStyle', newStyle);
         return {
           ...state,
           pageFlipStyle: newStyle,
         };
+      }
       default:
         return state;
     }
