@@ -32,11 +32,10 @@ import {
   Alert
 } from '@mui/material';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, Thermometer, Gauge, Moon, CloudRain, ArrowUpDown, Users, Navigation, ChevronDown, Edit2, Save } from 'lucide-react';
+import { LayoutGrid, List as ListIcon, Search, Trash2, MapPin, Calendar, Fish, Wind, Droplets, Anchor, FileText, X, ArrowUpDown, Users, Navigation, ChevronDown, Edit2, Save } from 'lucide-react';
 import { FormData } from '../../types';
 import { useJournal } from '../../context/JournalContext';
 import { journalPalette } from '../../theme/journalTheme';
-import { groupSpeciesByCategory, categoryLabels } from '../../data/fishSpecies';
 import { FishIcon } from '../FishIcon';
 import { LureIcon } from '../LureIcon';
 import { useFormValidation } from '../../hooks/useFormValidation';
@@ -46,83 +45,6 @@ import dayjs from 'dayjs';
 // Create motion components for table elements
 const MotionTableRow = motion.create('tr');
 const MotionBox = motion.create(Box);
-
-// Water caustics background effect
-function WaterCausticsBackground({ isDark }: { isDark: boolean }) {
-  const prefersReducedMotion = useReducedMotion();
-
-  return (
-    <Box
-      sx={{
-        position: 'absolute',
-        inset: 0,
-        overflow: 'hidden',
-        borderRadius: 2,
-        pointerEvents: 'none',
-        zIndex: 0,
-      }}
-    >
-      {/* SVG filter for caustics effect */}
-      <svg style={{ position: 'absolute', width: 0, height: 0 }}>
-        <defs>
-          <filter id="water-caustics" x="0%" y="0%" width="100%" height="100%">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.01 0.02"
-              numOctaves="3"
-              seed="5"
-              result="noise"
-            >
-              {!prefersReducedMotion && (
-                <animate
-                  attributeName="baseFrequency"
-                  dur="60s"
-                  values="0.01 0.02;0.015 0.025;0.01 0.02"
-                  repeatCount="indefinite"
-                />
-              )}
-            </feTurbulence>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" />
-          </filter>
-        </defs>
-      </svg>
-
-      {/* Animated gradient layers */}
-      <Box
-        sx={{
-          position: 'absolute',
-          inset: 0,
-          opacity: isDark ? 0.15 : 0.20,
-          background: isDark
-            ? 'radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.4) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(37, 99, 235, 0.3) 0%, transparent 50%)'
-            : 'radial-gradient(ellipse at 30% 20%, rgba(56, 189, 248, 0.5) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(34, 211, 238, 0.4) 0%, transparent 50%)',
-          backgroundSize: '200% 200%',
-          animation: prefersReducedMotion ? 'none' : 'causticsMove 60s ease-in-out infinite',
-          '@keyframes causticsMove': {
-            '0%': { backgroundPosition: '0% 0%' },
-            '50%': { backgroundPosition: '100% 100%' },
-            '100%': { backgroundPosition: '0% 0%' },
-          },
-        }}
-      />
-
-      {/* Subtle light ripples */}
-      <Box
-        sx={{
-          position: 'absolute',
-          inset: 0,
-          opacity: isDark ? 0.08 : 0.12,
-          background: 'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.03) 35px, rgba(255,255,255,0.03) 70px)',
-          animation: prefersReducedMotion ? 'none' : 'rippleShift 45s linear infinite',
-          '@keyframes rippleShift': {
-            '0%': { transform: 'translateX(0)' },
-            '100%': { transform: 'translateX(70px)' },
-          },
-        }}
-      />
-    </Box>
-  );
-}
 
 // Row animation variants
 const rowVariants = {
