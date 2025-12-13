@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, Container, Typography, Link } from '@mui/material';
+import { Box, Container, Typography, Link, alpha } from '@mui/material';
 import { Fish, Github } from 'lucide-react';
+import { journalPalette } from '../../theme/journalTheme';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -12,7 +13,21 @@ export default function Footer() {
         py: 3,
         px: 2,
         mt: 'auto',
-        backgroundColor: (theme) => theme.palette.grey[100],
+        backgroundColor: journalPalette.leatherDark,
+        color: journalPalette.creamLight,
+        borderTop: `2px solid ${journalPalette.leatherDeep}`,
+        position: 'relative',
+        // Stitching effect at top
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '4px',
+          backgroundImage: `repeating-linear-gradient(90deg, ${journalPalette.leatherLight} 0px, ${journalPalette.leatherLight} 8px, transparent 8px, transparent 16px)`,
+          opacity: 0.4,
+        },
       }}
     >
       <Container maxWidth="lg">
@@ -26,26 +41,67 @@ export default function Footer() {
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Fish size={20} />
-            <Typography variant="body2" color="text.secondary">
+            <Fish size={20} color={journalPalette.creamLight} />
+            <Typography
+              variant="body2"
+              sx={{
+                color: alpha(journalPalette.creamLight, 0.8),
+                fontFamily: '"Special Elite", monospace',
+              }}
+            >
               © {currentYear} Fishing Journal. All rights reserved.
             </Typography>
           </Box>
-          
+
           <Box sx={{ display: 'flex', gap: 3 }}>
             <Link
               href="#"
-              color="text.secondary"
-              sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+              underline="hover"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5,
+                color: alpha(journalPalette.creamLight, 0.8),
+                transition: 'color 0.2s',
+                '&:hover': {
+                  color: journalPalette.creamLight,
+                },
+              }}
             >
               <Github size={16} />
-              <Typography variant="body2">Source Code</Typography>
+              <Typography variant="body2" sx={{ fontFamily: '"Special Elite", monospace' }}>
+                Source Code
+              </Typography>
             </Link>
-            <Link href="#" color="text.secondary">
-              <Typography variant="body2">Privacy Policy</Typography>
+            <Link
+              href="#"
+              underline="hover"
+              sx={{
+                color: alpha(journalPalette.creamLight, 0.8),
+                transition: 'color 0.2s',
+                '&:hover': {
+                  color: journalPalette.creamLight,
+                },
+              }}
+            >
+              <Typography variant="body2" sx={{ fontFamily: '"Special Elite", monospace' }}>
+                Privacy Policy
+              </Typography>
             </Link>
-            <Link href="#" color="text.secondary">
-              <Typography variant="body2">Terms of Use</Typography>
+            <Link
+              href="#"
+              underline="hover"
+              sx={{
+                color: alpha(journalPalette.creamLight, 0.8),
+                transition: 'color 0.2s',
+                '&:hover': {
+                  color: journalPalette.creamLight,
+                },
+              }}
+            >
+              <Typography variant="body2" sx={{ fontFamily: '"Special Elite", monospace' }}>
+                Terms of Use
+              </Typography>
             </Link>
           </Box>
         </Box>
