@@ -120,7 +120,8 @@ export default function Dashboard() {
                 <Typography variant="h4" sx={{
                   fontStyle: 'italic',
                   fontWeight: 600,
-                  textShadow: '0 2px 8px rgba(0,0,0,0.7)',
+                  color: '#faf8f3',
+                  textShadow: '0 2px 4px rgba(0,0,0,0.9), 0 4px 12px rgba(0,0,0,0.6)',
                   maxWidth: 800,
                   mx: 'auto',
                   lineHeight: 1.4
