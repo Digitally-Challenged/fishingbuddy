@@ -827,19 +827,40 @@ export default function JournalEntryList() {
               </>
             )}
 
-            <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <DialogTitle sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              pt: 7,
+              bgcolor: isDark ? 'rgba(42, 31, 26, 0.9)' : 'rgba(139, 107, 74, 0.12)',
+              borderBottom: `2px solid ${journalPalette.leatherLight}`,
+            }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Calendar size={24} />
+                <Calendar size={24} color={isDark ? journalPalette.amber : journalPalette.leatherDark} />
                 <Box>
                   {isEditing ? (
                     <Typography variant="h6" color="primary">Editing Entry</Typography>
                   ) : (
                     <>
-                      <Typography variant="h6">
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          color: isDark ? journalPalette.warmCream : journalPalette.leatherDeep,
+                          fontWeight: 500,
+                          textShadow: isDark ? 'none' : '0 1px 2px rgba(0,0,0,0.1)',
+                        }}
+                      >
                         {dayjs(selectedEntry.date).format('MMMM D, YYYY')}
                       </Typography>
                       {filteredEntriesForNav.length > 1 && (
-                        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: isDark ? journalPalette.mutedTan : journalPalette.leatherDark,
+                            fontFamily: '"Special Elite", monospace',
+                            mt: 0.5,
+                          }}
+                        >
                           Entry {currentNavIndex + 1} of {filteredEntriesForNav.length}
                         </Typography>
                       )}
