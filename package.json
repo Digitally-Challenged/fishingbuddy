@@ -12,6 +12,8 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
+    "@fontsource/lora": "^5.2.8",
+    "@fontsource/special-elite": "^5.2.8",
     "@mui/material": "^5.15.12",
     "@mui/x-date-pickers": "^6.19.6",
     "@types/xlsx": "^0.0.36",
