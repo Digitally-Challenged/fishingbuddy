@@ -265,17 +265,8 @@ export const journalDarkOverrides: ThemeOptions = {
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          backgroundImage: 'url(/textures/paper-cream.webp)',
-          backgroundRepeat: 'repeat',
-          backgroundSize: '512px 512px',
-          filter: 'brightness(0.3) sepia(0.2)',
-          '&::before': {
-            content: '""',
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: journalPalette.darkWalnut,
-            zIndex: -1,
-          },
+          backgroundColor: journalPalette.darkWalnut,
+          backgroundImage: 'none',
         },
       },
     },
@@ -283,6 +274,7 @@ export const journalDarkOverrides: ThemeOptions = {
       styleOverrides: {
         root: {
           backgroundColor: journalPalette.darkParchment,
+          backgroundImage: 'none',
           border: `1px solid ${alpha(journalPalette.amber, 0.2)}`,
         },
       },
@@ -291,6 +283,7 @@ export const journalDarkOverrides: ThemeOptions = {
       styleOverrides: {
         root: {
           backgroundColor: journalPalette.darkParchment,
+          backgroundImage: 'none',
           border: `2px solid ${journalPalette.darkLeather}`,
         },
       },
@@ -299,7 +292,40 @@ export const journalDarkOverrides: ThemeOptions = {
       styleOverrides: {
         paper: {
           backgroundColor: journalPalette.darkParchment,
+          backgroundImage: 'none',
           border: `3px solid ${journalPalette.darkLeather}`,
+        },
+      },
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: alpha(journalPalette.darkLeather, 0.5),
+          '& .MuiTableCell-head': {
+            color: journalPalette.warmCream,
+          },
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        contained: {
+          backgroundColor: journalPalette.amber,
+          color: journalPalette.darkWalnut,
+          '&:hover': {
+            backgroundColor: journalPalette.leatherLight,
+          },
+        },
+      },
+    },
+    MuiFab: {
+      styleOverrides: {
+        root: {
+          backgroundColor: journalPalette.amber,
+          color: journalPalette.darkWalnut,
+          '&:hover': {
+            backgroundColor: journalPalette.leatherLight,
+          },
         },
       },
     },
