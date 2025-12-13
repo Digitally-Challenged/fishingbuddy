@@ -373,18 +373,29 @@ export default function JournalEntryList() {
       </Box>
 
       {filteredEntries.length === 0 ? (
-        <Box sx={{ 
-          textAlign: 'center', 
-          py: 8, 
-          bgcolor: 'background.paper', 
-          borderRadius: 2, 
-          border: '1px dashed',
-          borderColor: 'divider'
+        <Box sx={{
+          textAlign: 'center',
+          py: 8,
+          backgroundImage: 'url(/textures/paper-lined.webp)',
+          backgroundRepeat: 'repeat',
+          backgroundSize: '512px 512px',
+          borderRadius: 2,
+          border: `2px dashed ${journalPalette.leatherLight}`,
         }}>
-          <Typography variant="h6" color="text.secondary" gutterBottom>
+          <Typography
+            variant="h6"
+            sx={{
+              fontFamily: '"Special Elite", monospace',
+              color: journalPalette.inkFaded,
+            }}
+            gutterBottom
+          >
             No entries found
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          <Typography
+            variant="body2"
+            sx={{ color: journalPalette.inkFaded, mb: 3 }}
+          >
             Get out there and catch some fish!
           </Typography>
         </Box>
