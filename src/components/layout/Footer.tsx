@@ -69,7 +69,7 @@ export default function Footer() {
               }}
             >
               <Github size={16} />
-              <Typography variant="body2" sx={{ fontFamily: '"Special Elite", monospace' }}>
+              <Typography variant="body2" sx={{ fontFamily: '"Special Elite", monospace', color: 'inherit' }}>
                 Source Code
               </Typography>
             </Link>
@@ -84,7 +84,7 @@ export default function Footer() {
                 },
               }}
             >
-              <Typography variant="body2" sx={{ fontFamily: '"Special Elite", monospace' }}>
+              <Typography variant="body2" sx={{ fontFamily: '"Special Elite", monospace', color: 'inherit' }}>
                 Privacy Policy
               </Typography>
             </Link>
@@ -99,7 +99,7 @@ export default function Footer() {
                 },
               }}
             >
-              <Typography variant="body2" sx={{ fontFamily: '"Special Elite", monospace' }}>
+              <Typography variant="body2" sx={{ fontFamily: '"Special Elite", monospace', color: 'inherit' }}>
                 Terms of Use
               </Typography>
             </Link>
