@@ -30,6 +30,7 @@ export default function RequiredInfoSection({ formData, errors, handleChange }: 
           }}
           slotProps={{
             textField: {
+              required: true,
               error: !!errors.date,
               helperText: errors.date,
               fullWidth: true,
@@ -40,7 +41,8 @@ export default function RequiredInfoSection({ formData, errors, handleChange }: 
       <Grid item xs={12} md={6}>
         <TextField
           select
-          label="Stream Name *"
+          required
+          label="Stream Name"
           name="streamName"
           value={formData.streamName}
           onChange={handleChange}

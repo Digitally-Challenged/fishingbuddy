@@ -25,6 +25,30 @@ export default function Layout({ children, onNavigate }: LayoutProps) {
         },
       }}
     >
+      <a
+        href="#journal-content"
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          top: 'auto',
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden',
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.position = 'static';
+          e.currentTarget.style.width = 'auto';
+          e.currentTarget.style.height = 'auto';
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.position = 'absolute';
+          e.currentTarget.style.left = '-9999px';
+          e.currentTarget.style.width = '1px';
+          e.currentTarget.style.height = '1px';
+        }}
+      >
+        Skip to journal
+      </a>
       <Header onNavigate={onNavigate} />
       <Box component="main" sx={{ flex: 1 }}>
         {children}

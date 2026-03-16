@@ -743,7 +743,10 @@ export default function JournalEntryList() {
           </Box>
 
           {pageCount > 1 && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4, gap: 1 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                Showing {(page - 1) * entriesPerPage + 1}–{Math.min(page * entriesPerPage, filteredEntries.length)} of {filteredEntries.length} trips
+              </Typography>
               <Pagination
                 count={pageCount}
                 page={page}

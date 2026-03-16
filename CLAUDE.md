@@ -19,8 +19,10 @@ This is a **React + TypeScript + Vite** fishing journal application focused on A
 - **React 18** with TypeScript
 - **Vite** for build tooling
 - **MUI (Material-UI)** for components
+- **@mui/x-date-pickers** for DatePicker inputs
 - **Tailwind CSS** for utility styling
 - **dayjs** for date handling
+- **framer-motion** for animations (page flips, parallax, reduced-motion aware)
 - **xlsx** for Excel export functionality
 - **lucide-react** for icons
 
@@ -29,7 +31,8 @@ This is a **React + TypeScript + Vite** fishing journal application focused on A
 The app uses React Context with `useReducer` for global state:
 
 - `src/context/JournalContext.tsx` - Central state management for journal entries, dark mode, import/export operations
-- `src/hooks/useJournalForm.ts` - Form state and validation logic
+- `src/hooks/useJournalForm.ts` - Form state, validation, and draft auto-save logic
+- `src/hooks/useFormValidation.ts` - Reusable field validation with per-field rules and error clearing
 - `src/hooks/useLocalStorage.ts` - localStorage persistence hook
 
 The `JournalContext` provides:
@@ -42,22 +45,24 @@ The `JournalContext` provides:
 ```
 src/
 ├── components/
-│   ├── Dashboard.tsx              # Main dashboard view
+│   ├── Dashboard.tsx              # Main dashboard; hero with parallax + #journal-content skip anchor
 │   ├── FishingJournalForm.tsx     # Entry creation form (single-page)
-│   ├── WizardForm.tsx             # Multi-step wizard form (mobile-friendly)
+│   ├── WizardForm.tsx             # Multi-step wizard form (mobile-friendly, draft auto-save)
 │   ├── FishIcon.tsx               # Fish species icon component
 │   ├── LureIcon.tsx               # Lure/bait icon component
 │   ├── dashboard/                 # Dashboard sub-components
-│   │   ├── JournalEntryList.tsx
+│   │   ├── JournalEntryList.tsx   # Entry list with search, sort, edit, delete, page-flip animation, photo lightbox
+│   │   ├── JournalEntryCard.tsx   # Mobile card layout for individual entries
+│   │   ├── DeleteConfirmDialog.tsx # Themed delete confirmation dialog
 │   │   ├── JournalStats.tsx
 │   │   └── RecentActivity.tsx
 │   ├── layout/                    # App shell components
-│   │   ├── Layout.tsx
+│   │   ├── Layout.tsx             # Leather-frame border via journalPalette; skip-to-content link (#journal-content)
 │   │   ├── Header.tsx
 │   │   ├── Footer.tsx
 │   │   └── MobileMenu.tsx
 │   └── sections/                  # Form section components
-│       ├── RequiredInfoSection.tsx
+│       ├── RequiredInfoSection.tsx  # DatePicker (@mui/x-date-pickers) + sorted stream dropdown (getSortedStreams)
 │       ├── WeatherSection.tsx
 │       ├── WaterConditionsSection.tsx
 │       ├── CatchDetailsSection.tsx
@@ -82,7 +87,8 @@ src/
 │   └── diary.ts                   # DiaryEntry interface for parsed entries
 └── theme/
     ├── baseTheme.ts               # Base MUI theme configuration
-    └── modernTheme.ts             # Modern theme variant
+    ├── modernTheme.ts             # Modern theme variant
+    └── journalTheme.ts            # Leather journal palette + MUI theme options
 ```
 
 ### Key Data Types
@@ -117,6 +123,7 @@ Icon mapping supports:
 MUI theming is configured in `src/theme/`:
 - `baseTheme.ts` - Light/dark mode with smooth transitions, blue primary palette
 - `modernTheme.ts` - Modern design variant
+- `journalTheme.ts` - Leather journal palette (`journalPalette`) with cream paper, leather browns, ink blacks, sepia tones; used by dashboard components
 - Default form component variants
 
 ### Data Sources
@@ -128,4 +135,11 @@ MUI theming is configured in `src/theme/`:
 
 ### Storage
 
-Journal entries persist to `localStorage` under key `fishingJournalEntries`. The `storageUtils` module handles all persistence operations including import/export as JSON.
+Journal entries persist to `localStorage` via `storageUtils` (`src/utils/storage.ts`):
+
+- **Entries**: key `fishingJournalEntries` — CRUD, import/export as JSON
+- **Draft**: key `fishingJournal_draft` — auto-saved on every form field change; restored on WizardForm load
+- **Draft step**: key `fishingJournal_draftStep` — persists current wizard step across sessions
+- **Dark mode**: key `darkMode` — persists user's dark mode preference
+
+`hasDraft()` returns true only if draft contains meaningful data (date, streamName, fishSpecies, or notes).

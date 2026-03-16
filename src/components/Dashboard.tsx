@@ -77,7 +77,7 @@ export default function Dashboard() {
               p: 4,
               borderRadius: 4,
               overflow: 'hidden',
-              minHeight: { xs: 280, sm: 350, md: 420, lg: 480 },
+              minHeight: { xs: 180, sm: 280, md: 420, lg: 480 },
               display: 'flex',
               alignItems: 'flex-end',
               justifyContent: 'center',
@@ -132,6 +132,7 @@ export default function Dashboard() {
             </Box>
           </Paper>
 
+          <Box id="journal-content" />
           <JournalStats />
 
           <JournalEntryList />

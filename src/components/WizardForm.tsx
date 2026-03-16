@@ -81,19 +81,18 @@ export default function WizardForm({ onClose }: WizardFormProps) {
     }
   };
 
+  const [stepErrors, setStepErrors] = useState<Record<string, string>>({});
+
   const handleNext = () => {
-    // Basic validation before proceeding from first step
     if (activeStep === 0) {
-      if (!formData.date || !formData.streamName) {
-        // Trigger validation by calling a dummy submit or manually checking
-        // Since useJournalForm exposes errors but not a validate function directly for external use without submit,
-        // we'll rely on the visual error state passed down.
-        // For better UX, we could expose validateStep from the hook, but for now let's just alert/block if empty
-        if (!formData.date || !formData.streamName) {
-           alert("Please fill in the required Date and Stream Name.");
-           return;
-        }
+      const newErrors: Record<string, string> = {};
+      if (!formData.date) newErrors.date = 'Date is required';
+      if (!formData.streamName) newErrors.streamName = 'Stream name is required';
+      if (Object.keys(newErrors).length > 0) {
+        setStepErrors(newErrors);
+        return;
       }
+      setStepErrors({});
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     storageUtils.saveDraftStep(activeStep + 1);
@@ -112,7 +111,7 @@ export default function WizardForm({ onClose }: WizardFormProps) {
              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                <MapPin size={24} /> Where & When?
              </Typography>
-             <RequiredInfoSection formData={formData} errors={errors} handleChange={handleChange} />
+             <RequiredInfoSection formData={formData} errors={{ ...errors, ...stepErrors }} handleChange={handleChange} />
           </Box>
         );
       case 1:

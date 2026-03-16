@@ -19,7 +19,7 @@ export const journalPalette = {
   darkParchment: '#2d2520',
   darkLeather: '#2a1f1a',
   warmCream: '#e8dfd0',
-  mutedTan: '#a89880',
+  mutedTan: '#bfb09a',
   amber: '#c4956a',
 };
 
@@ -103,7 +103,7 @@ export const journalTheme: ThemeOptions = {
     caption: {
       fontFamily: '"Special Elite", "Courier New", monospace',
       color: journalPalette.inkFaded,
-      fontSize: '0.75rem',
+      fontSize: '0.8125rem',
     },
     button: {
       fontFamily: '"Special Elite", "Courier New", monospace',
