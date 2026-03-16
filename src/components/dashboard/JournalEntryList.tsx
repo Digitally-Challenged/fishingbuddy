@@ -545,7 +545,7 @@ export default function JournalEntryList() {
                         </TableCell>
                         <TableCell component="th" scope="row">
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, whiteSpace: 'nowrap' }}>
-                            <Calendar size={16} className="text-slate-400" />
+                            <Calendar size={16} style={{ color: isDark ? journalPalette.amber : '#94a3b8' }} />
                             {dayjs(entry.date).format('MMM D, YYYY')}
                           </Box>
                         </TableCell>
@@ -553,7 +553,7 @@ export default function JournalEntryList() {
                         <TableCell>
                           <Stack spacing={0.5}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, fontWeight: 500 }}>
-                              <MapPin size={16} className="text-slate-400" />
+                              <MapPin size={16} style={{ color: isDark ? journalPalette.amber : '#94a3b8' }} />
                               {entry.streamName}
                             </Box>
                             {entry.usgsGauge && (
@@ -587,7 +587,7 @@ export default function JournalEntryList() {
                           <Stack spacing={0.5}>
                             {(entry.flowRate || entry.waterTemperature) && (
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <Droplets size={16} className="text-blue-400" />
+                                <Droplets size={16} style={{ color: isDark ? '#7cb8d4' : '#60a5fa' }} />
                                 <Typography variant="body2">
                                   {entry.flowRate ? `${entry.flowRate} cfs` : ''}
                                   {entry.flowRate && entry.waterTemperature ? ' • ' : ''}
@@ -611,7 +611,7 @@ export default function JournalEntryList() {
                                  <FishIcon
                                    species={entry.fishSpecies}
                                    size="sm"
-                                   fallback={<Fish size={16} className="text-emerald-500" />}
+                                   fallback={<Fish size={16} style={{ color: isDark ? '#6ee7b7' : '#10b981' }} />}
                                  />
                                  <Typography variant="body2" fontWeight={500}>
                                    {entry.numberCaught} {entry.fishSpecies}
@@ -627,7 +627,7 @@ export default function JournalEntryList() {
                                <LureIcon
                                  bait={entry.baitUsed}
                                  size="sm"
-                                 fallback={<Anchor size={16} className="text-slate-400" />}
+                                 fallback={<Anchor size={16} style={{ color: isDark ? journalPalette.amber : '#94a3b8' }} />}
                                />
                                <Typography variant="body2">
                                  {entry.baitUsed}
@@ -640,7 +640,7 @@ export default function JournalEntryList() {
                           {entry.notes && (
                             <Tooltip title={entry.notes}>
                               <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-                                <FileText size={16} className="text-slate-400 shrink-0" style={{ marginTop: 2 }} />
+                                <FileText size={16} style={{ color: isDark ? journalPalette.amber : '#94a3b8', flexShrink: 0, marginTop: 2 }} />
                                 <Typography variant="caption" color="text.secondary" sx={{ 
                                   display: '-webkit-box',
                                   WebkitLineClamp: 2,
@@ -681,7 +681,7 @@ export default function JournalEntryList() {
                                   {hasMultipleSpecies && (
                                     <Grid item xs={12} md={6}>
                                       <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <Fish size={18} className="text-emerald-500" />
+                                        <Fish size={18} style={{ color: isDark ? '#6ee7b7' : '#10b981' }} />
                                         All Species Caught ({entry.numberCaught} total)
                                       </Typography>
                                       <Stack direction="row" flexWrap="wrap" gap={1}>
@@ -706,7 +706,7 @@ export default function JournalEntryList() {
                                   {hasMultipleBaits && (
                                     <Grid item xs={12} md={6}>
                                       <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <Anchor size={18} className="text-slate-400" />
+                                        <Anchor size={18} style={{ color: isDark ? journalPalette.amber : '#94a3b8' }} />
                                         All Baits Used
                                       </Typography>
                                       <Stack direction="row" flexWrap="wrap" gap={1}>
@@ -775,8 +775,9 @@ export default function JournalEntryList() {
           transition: { duration: 0.2 },
           sx: {
             backdropFilter: 'blur(4px)',
-            border: `4px solid ${journalPalette.leatherDark}`,
-            backgroundImage: 'url(/textures/paper-cream.webp)',
+            border: `4px solid ${isDark ? journalPalette.darkLeather : journalPalette.leatherDark}`,
+            backgroundColor: isDark ? journalPalette.darkParchment : undefined,
+            backgroundImage: isDark ? 'none' : 'url(/textures/paper-cream.webp)',
             backgroundRepeat: 'repeat',
             backgroundSize: '512px 512px',
             position: 'relative',

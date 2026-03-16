@@ -261,6 +261,19 @@ export const journalDarkOverrides: ThemeOptions = {
     },
     divider: alpha(journalPalette.amber, 0.2),
   },
+  typography: {
+    h1: { color: journalPalette.warmCream },
+    h2: { color: journalPalette.warmCream },
+    h3: { color: journalPalette.warmCream },
+    h4: { color: journalPalette.warmCream },
+    h5: { color: journalPalette.warmCream },
+    h6: { color: journalPalette.warmCream },
+    subtitle1: { color: journalPalette.amber },
+    subtitle2: { color: journalPalette.amber },
+    body1: { color: journalPalette.warmCream },
+    body2: { color: journalPalette.mutedTan },
+    caption: { color: journalPalette.mutedTan },
+  },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
@@ -304,6 +317,25 @@ export const journalDarkOverrides: ThemeOptions = {
           '& .MuiTableCell-head': {
             color: journalPalette.warmCream,
           },
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          color: journalPalette.warmCream,
+          borderBottom: `1px solid ${alpha(journalPalette.amber, 0.15)}`,
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          color: journalPalette.warmCream,
+          borderColor: alpha(journalPalette.amber, 0.4),
+        },
+        outlined: {
+          backgroundColor: alpha(journalPalette.darkLeather, 0.5),
         },
       },
     },
