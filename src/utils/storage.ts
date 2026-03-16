@@ -137,7 +137,7 @@ export const storageUtils = {
     try {
       const step = localStorage.getItem('fishingJournal_draftStep');
       return step ? JSON.parse(step) : 0;
-    } catch (error) {
+    } catch {
       return 0;
     }
   },
