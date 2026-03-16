@@ -1,7 +1,7 @@
 import { Typography, Grid, Box, Card } from '@mui/material';
 import { Fish, Droplets, MapPin, Calendar } from 'lucide-react';
 import { useJournal } from '../../context/JournalContext';
-import { alpha } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import { journalPalette } from '../../theme/journalTheme';
 
 export default function JournalStats() {
@@ -53,25 +53,28 @@ export default function JournalStats() {
 }
 
 function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: number; color: string }) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
+
   return (
     <Card sx={{
       p: 3,
       height: '100%',
       display: 'flex',
       alignItems: 'center',
-      borderLeft: `4px solid ${color}`,
-      backgroundImage: 'url(/textures/paper-cream.webp)',
+      backgroundImage: isDark ? 'none' : 'url(/textures/paper-cream.webp)',
       backgroundRepeat: 'repeat',
       backgroundSize: '512px 512px',
-      border: `1px solid ${journalPalette.lineRule}`,
+      backgroundColor: isDark ? journalPalette.darkParchment : undefined,
+      border: `1px solid ${isDark ? alpha(journalPalette.amber, 0.2) : journalPalette.lineRule}`,
       borderLeftWidth: '4px',
-      borderLeftColor: color,
+      borderLeftColor: isDark ? journalPalette.amber : color,
     }}>
       <Box sx={{
         p: 1.5,
         borderRadius: '8px',
-        bgcolor: alpha(color, 0.12),
-        color: color,
+        bgcolor: alpha(isDark ? journalPalette.amber : color, isDark ? 0.2 : 0.12),
+        color: isDark ? journalPalette.amber : color,
         mr: 2.5
       }}>
         {icon}
@@ -83,7 +86,7 @@ function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label:
             fontFamily: '"Special Elite", "Courier New", monospace',
             fontWeight: 400,
             lineHeight: 1,
-            color: journalPalette.leatherDeep,
+            color: isDark ? journalPalette.warmCream : journalPalette.leatherDeep,
           }}
         >
           {value}
@@ -93,7 +96,7 @@ function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label:
           sx={{
             mt: 0.5,
             fontFamily: '"Lora", Georgia, serif',
-            color: journalPalette.inkFaded,
+            color: isDark ? journalPalette.mutedTan : journalPalette.inkFaded,
             fontWeight: 500,
           }}
         >

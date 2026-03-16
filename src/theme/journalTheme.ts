@@ -339,6 +339,53 @@ export const journalDarkOverrides: ThemeOptions = {
         },
       },
     },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            backgroundColor: alpha(journalPalette.darkLeather, 0.6),
+            color: journalPalette.warmCream,
+            '& fieldset': {
+              borderColor: alpha(journalPalette.amber, 0.3),
+            },
+            '&:hover fieldset': {
+              borderColor: journalPalette.amber,
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: journalPalette.amber,
+            },
+          },
+          '& .MuiInputLabel-root': {
+            color: journalPalette.mutedTan,
+            '&.Mui-focused': {
+              color: journalPalette.amber,
+            },
+          },
+          '& .MuiInputBase-input': {
+            color: journalPalette.warmCream,
+          },
+          '& .MuiInputBase-input::placeholder': {
+            color: journalPalette.mutedTan,
+            opacity: 0.7,
+          },
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        icon: {
+          color: journalPalette.mutedTan,
+        },
+      },
+    },
+    MuiAutocomplete: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: journalPalette.darkParchment,
+          color: journalPalette.warmCream,
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         contained: {
