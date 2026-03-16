@@ -26,6 +26,7 @@ import {
   Button,
   Divider,
   useTheme,
+  useMediaQuery,
   Collapse,
   Autocomplete,
   Snackbar,
@@ -46,6 +47,7 @@ import { useFormValidation } from '../../hooks/useFormValidation';
 import { allArkansasStreams } from '../../data/arkansasStreams';
 import dayjs from 'dayjs';
 import DeleteConfirmDialog from './DeleteConfirmDialog';
+import JournalEntryCard from './JournalEntryCard';
 
 // Create motion components for table elements
 const MotionTableRow = motion.create('tr');
@@ -148,6 +150,7 @@ export default function JournalEntryList() {
   const { state, dispatch } = useJournal();
   const { pageFlipStyle } = state;
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const prefersReducedMotion = useReducedMotion();
   const [viewMode] = useState<'grid' | 'list'>('list');
   const [page, setPage] = useState(1);
@@ -441,6 +444,22 @@ export default function JournalEntryList() {
       ) : (
         <>
           <Box sx={{ position: 'relative' }}>
+            {isMobile ? (
+              <Box>
+                {currentEntries.map((entry, idx) => {
+                  const originalIndex = state.entries.indexOf(entry);
+                  return (
+                    <JournalEntryCard
+                      key={`${entry.date}-${entry.streamName}-${idx}`}
+                      entry={entry}
+                      originalIndex={originalIndex}
+                      onDelete={handleDeleteClick}
+                      onClick={() => handleOpenEntry(entry, originalIndex)}
+                    />
+                  );
+                })}
+              </Box>
+            ) : (
             <TableContainer
               component={Paper}
               elevation={0}
@@ -720,6 +739,7 @@ export default function JournalEntryList() {
                 </TableBody>
               </Table>
             </TableContainer>
+            )}
           </Box>
 
           {pageCount > 1 && (
