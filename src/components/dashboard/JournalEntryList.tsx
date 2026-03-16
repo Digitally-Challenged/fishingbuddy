@@ -45,6 +45,7 @@ import { LureIcon } from '../LureIcon';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { allArkansasStreams } from '../../data/arkansasStreams';
 import dayjs from 'dayjs';
+import DeleteConfirmDialog from './DeleteConfirmDialog';
 
 // Create motion components for table elements
 const MotionTableRow = motion.create('tr');
@@ -166,6 +167,7 @@ export default function JournalEntryList() {
   const [isFlipping, setIsFlipping] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxPhoto, setLightboxPhoto] = useState<{ url: string; caption: string } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ index: number; entry: FormData } | null>(null);
   const isDark = theme.palette.mode === 'dark';
 
   // Validation for edit form
@@ -249,10 +251,19 @@ export default function JournalEntryList() {
     setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
   };
 
-  const handleDelete = (index: number) => {
-    if (window.confirm('Are you sure you want to delete this entry?')) {
-      dispatch({ type: 'DELETE_ENTRY', payload: index });
+  const handleDeleteClick = (index: number) => {
+    setDeleteTarget({ index, entry: state.entries[index] });
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteTarget) {
+      dispatch({ type: 'DELETE_ENTRY', payload: deleteTarget.index });
+      setDeleteTarget(null);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteTarget(null);
   };
 
   // Computed filtered entries for navigation
@@ -626,7 +637,7 @@ export default function JournalEntryList() {
 
                         <TableCell align="right">
                           <Tooltip title="Delete">
-                            <IconButton onClick={(e) => { e.stopPropagation(); handleDelete(originalIndex); }} color="error" size="small">
+                            <IconButton onClick={(e) => { e.stopPropagation(); handleDeleteClick(originalIndex); }} color="error" size="small">
                               <Trash2 size={18} />
                             </IconButton>
                           </Tooltip>
@@ -1611,6 +1622,14 @@ export default function JournalEntryList() {
           {snackbar.message}
         </Alert>
       </Snackbar>
+
+      <DeleteConfirmDialog
+        open={deleteTarget !== null}
+        entryDate={deleteTarget?.entry.date ?? ''}
+        entryStream={deleteTarget?.entry.streamName ?? ''}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </Box>
   );
 }
