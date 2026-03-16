@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FormData, FormErrors, Picture, FormChangeHandler } from '../types';
 import { useJournal } from '../context/JournalContext';
+import { storageUtils } from '../utils/storage';
 
 const initialFormData: FormData = {
   date: '',
@@ -49,11 +50,12 @@ export function useJournalForm() {
 
   const handleChange: FormChangeHandler = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: value };
+      storageUtils.saveDraft(updated);
+      return updated;
+    });
+
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({
         ...prev,
@@ -66,16 +68,24 @@ export function useJournalForm() {
     e.preventDefault();
     if (validateForm()) {
       dispatch({ type: 'ADD_ENTRY', payload: formData });
+      storageUtils.clearDraft();
       setFormData(initialFormData);
       alert('Journal entry saved successfully!');
     }
   };
 
   const handlePictureChange = (pictures: Picture[]) => {
-    setFormData(prev => ({
-      ...prev,
-      pictures
-    }));
+    setFormData((prev) => {
+      const updated = { ...prev, pictures };
+      storageUtils.saveDraft(updated);
+      return updated;
+    });
+  };
+
+  const getDraft = (): FormData | null => storageUtils.loadDraft();
+  const clearDraft = (): void => {
+    storageUtils.clearDraft();
+    setFormData(initialFormData);
   };
 
   return {
@@ -84,5 +94,8 @@ export function useJournalForm() {
     handleChange,
     handleSubmit,
     handlePictureChange,
+    getDraft,
+    clearDraft,
+    setFormData,
   };
 }

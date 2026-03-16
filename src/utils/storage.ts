@@ -104,5 +104,61 @@ export const storageUtils = {
     } catch (error) {
       console.error('Failed to save dark mode preference:', error);
     }
-  }
+  },
+
+  // Draft persistence
+  saveDraft: (formData: FormData): void => {
+    try {
+      localStorage.setItem('fishingJournal_draft', JSON.stringify(formData));
+    } catch (error) {
+      console.error('Error saving draft:', error);
+    }
+  },
+
+  saveDraftStep: (step: number): void => {
+    try {
+      localStorage.setItem('fishingJournal_draftStep', JSON.stringify(step));
+    } catch (error) {
+      console.error('Error saving draft step:', error);
+    }
+  },
+
+  loadDraft: (): FormData | null => {
+    try {
+      const draft = localStorage.getItem('fishingJournal_draft');
+      return draft ? JSON.parse(draft) : null;
+    } catch (error) {
+      console.error('Error loading draft:', error);
+      return null;
+    }
+  },
+
+  loadDraftStep: (): number => {
+    try {
+      const step = localStorage.getItem('fishingJournal_draftStep');
+      return step ? JSON.parse(step) : 0;
+    } catch (error) {
+      return 0;
+    }
+  },
+
+  clearDraft: (): void => {
+    try {
+      localStorage.removeItem('fishingJournal_draft');
+      localStorage.removeItem('fishingJournal_draftStep');
+    } catch (error) {
+      console.error('Error clearing draft:', error);
+    }
+  },
+
+  hasDraft: (): boolean => {
+    try {
+      const draft = localStorage.getItem('fishingJournal_draft');
+      if (!draft) return false;
+      const parsed = JSON.parse(draft);
+      return !!(parsed.date || parsed.streamName || parsed.fishSpecies || parsed.notes);
+    } catch {
+      return false;
+    }
+  },
 };

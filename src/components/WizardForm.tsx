@@ -1,13 +1,15 @@
-import { useState } from 'react';
-import { 
-  Paper, 
-  Box, 
-  Stepper, 
-  Step, 
-  StepLabel, 
-  Button, 
-  Typography, 
-  MobileStepper 
+import { useState, useEffect } from 'react';
+import {
+  Paper,
+  Box,
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  Typography,
+  MobileStepper,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import {
   ChevronLeft,
@@ -27,6 +29,7 @@ import NotesSection from './sections/NotesSection';
 import PictureUpload from './sections/PictureUpload';
 import WifesMoodSection from './sections/WifesMoodSection';
 import { useJournalForm } from '../hooks/useJournalForm';
+import { storageUtils } from '../utils/storage';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -43,10 +46,31 @@ interface WizardFormProps {
 }
 
 export default function WizardForm({ onClose }: WizardFormProps) {
-  const { formData, errors, handleChange, handleSubmit: originalSubmit, handlePictureChange } = useJournalForm();
+  const { formData, errors, handleChange, handleSubmit: originalSubmit, handlePictureChange, getDraft, clearDraft, setFormData } = useJournalForm();
   const [activeStep, setActiveStep] = useState(0);
+  const [showDraftPrompt, setShowDraftPrompt] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  useEffect(() => {
+    if (storageUtils.hasDraft()) {
+      setShowDraftPrompt(true);
+    }
+  }, []);
+
+  const handleRestoreDraft = () => {
+    const draft = getDraft();
+    if (draft) {
+      setFormData(draft);
+      setActiveStep(storageUtils.loadDraftStep());
+    }
+    setShowDraftPrompt(false);
+  };
+
+  const handleDiscardDraft = () => {
+    clearDraft();
+    setShowDraftPrompt(false);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     // Wrap the submit handler to close the modal on success
@@ -72,10 +96,12 @@ export default function WizardForm({ onClose }: WizardFormProps) {
       }
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    storageUtils.saveDraftStep(activeStep + 1);
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    storageUtils.saveDraftStep(activeStep - 1);
   };
 
   const getStepContent = (step: number) => {
@@ -213,6 +239,30 @@ export default function WizardForm({ onClose }: WizardFormProps) {
           )}
         </Box>
       </Box>
+
+      <Snackbar
+        open={showDraftPrompt}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        sx={{ top: { xs: 70, md: 80 } }}
+      >
+        <Alert
+          severity="info"
+          variant="filled"
+          sx={{ width: '100%', alignItems: 'center' }}
+          action={
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Button color="inherit" size="small" onClick={handleDiscardDraft}>
+                Start Fresh
+              </Button>
+              <Button color="inherit" size="small" variant="outlined" onClick={handleRestoreDraft}>
+                Continue
+              </Button>
+            </Box>
+          }
+        >
+          You have an unsaved draft
+        </Alert>
+      </Snackbar>
     </Paper>
   );
 }
